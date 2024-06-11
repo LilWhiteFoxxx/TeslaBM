@@ -1,0 +1,23 @@
+.apparel {
+    display: flex;
+    justify-content: space-between;
+    height: 95vh;
+    margin-bottom: -21px;
+    padding: 24px 14px 32px;
+    .accessories-container{
+        width: 33%;
+        img {
+            object-fit: cover;
+            height: 98%;
+            width: 100%;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0% 100%);
+        }
+        .apparel-text {
+            position: relative;
+            bottom: 10.5em;
+            h1 {
+                font-weight: 500;
+            }
+        }
+    }
+}
