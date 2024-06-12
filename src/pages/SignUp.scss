@@ -1,0 +1,87 @@
+.sign-up-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: black;
+    // color: #fff;
+    color: #a2a3a5;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-up-form {
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    // background-color: #1a1a1a;
+
+    .title-form {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #fff;
+    }
+
+    label {
+        color: #fff;
+    }
+
+    svg {
+        margin-left: 10px;;
+    }
+
+    .input-form {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: black;
+        // color: #fff;
+        color: #a2a3a5;
+        // border-radius: 5px;
+        border: 1px solid #333;
+        padding: 10px;
+    }
+}
+
+.btn-sign-up {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    // background-color: #e50914;
+    color: #fff;
+    background-color: rgb(255 255 255 / 10%);
+    border-top: 3px solid #8e8e8e;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #f3425f;
+    }
+}
+
+.navLogo {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 8%;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.tds-icon {
+    block-size: 24px;
+    // content: "";
+    display: block;
+    inline-size: 24px;
+    max-inline-size: 100%;
+    min-block-size: 24px;
+    min-inline-size: 24px;
+    overflow: hidden;
+    text-indent: -9999px;
+    // background-color: #fff;
+    // transform: var(--tds-icon--transform);
+    // transition: color 0.33s ease, transform 0.5s cubic-bezier(0.5, 0, 0, 0.75);
+}

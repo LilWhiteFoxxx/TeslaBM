@@ -3,7 +3,7 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: black;
-    color: #fff;
+    color: #a2a3a5;
     justify-content: center;
     align-items: center;
 }
@@ -12,29 +12,41 @@
     margin-top: 30px;
     margin-bottom: 30px;
     width: 8%;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .sign-in-form {
-    background-color: #1a1a1a;
+    // background-color: #1a1a1a;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 400px;
 
+    label {
+        color: #fff;
+    }
+
+    svg {
+        margin-left: 10px;;
+    }
+
     &__title {
         font-size: 24px;
         margin-bottom: 20px;
         text-align: center;
+        color: #fff;
     }
 
     &__input {
         width: 100%;
         padding: 10px;
-        margin-top: 20px;
+        margin-top: 10px;
         margin-bottom: 10px;
         border: 1px solid #333;
-        border-radius: 5px;
-        background-color: #2a2a2a;
+        // border-radius: 5px;
+        background-color: black;
         color: #fff;
     }
 
@@ -42,8 +54,9 @@
         width: 100%;
         padding: 10px;
         margin-top: 30px;
-        background-color: #e50914;
-        border: none;
+        // background-color: #e50914;
+        background-color: rgb(255 255 255 / 10%);
+        border-top: 3px solid #8e8e8e;
         border-radius: 5px;
         color: #fff;
         cursor: pointer;
@@ -61,12 +74,13 @@
         font-size: 12px;
 
         a {
-            color: #fff;
-            text-decoration: none;
-            
+            // color: #fff;
+            color: #a2a3a5;
+
+            text-decoration: underline;
 
             &:hover {
-                text-decoration: underline;
+                cursor: pointer;
             }
         }
     }

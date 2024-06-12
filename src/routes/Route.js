@@ -9,6 +9,7 @@ import Cart from "../components/cart/Cart";
 import Checkout from "../components/checkoutPage/Checkout";
 import Confirmation from "../components/checkoutPage/Confirmation";
 import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
 
 export default function MyRouter() {
   return (
@@ -49,6 +50,7 @@ export default function MyRouter() {
           <Route exact path='/groupproject/cart' element={<Cart />} />
         </Route>
         <Route path="/groupproject/login" element={<Login/>}/>
+        <Route path="/groupproject/signup" element={<SignUp/>}/>
       </Routes>
     </Router>
   );

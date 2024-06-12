@@ -53,12 +53,12 @@ export const StyledNav = styled.nav`
             height: 100%;
             width: 120px;
         }
-        hr {
-            margin-left: auto;
-        }
+    }
+    hr {
+        margin-left: 105px;
     }
     .navHoverEffect {
-        margin-left: 10px;
+        margin-left: 5px;
     }
 
     input {

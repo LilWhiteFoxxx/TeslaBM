@@ -118,6 +118,7 @@ const StyledSideMenu = styled.div`
                     margin-bottom: 20px;
                     &:hover {
                         background-color: rgb(237, 237, 237);
+                        cursor: pointer;
                     }
                 }
                 .languageSelector {
@@ -233,6 +234,7 @@ export default function NavSideMenu({
                 <div className="secondarySideMenuNav">
                     <ul>
                         <li>Shop FAQ</li>
+                        <li>Contact US</li>
                         <li onClick={() => navigate('login')}>Sign In</li>
                         <li className="languageSelector">
                             <img src={globe} alt="" />
