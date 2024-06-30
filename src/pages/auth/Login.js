@@ -5,6 +5,8 @@ import './Login.scss';
 import { useNavigate } from 'react-router-dom';
 import InputAuth from '../../components/auth/InputAuth';
 import ButtonAuth from '../../components/auth/ButtonAuth';
+import { emailRegex } from '../../helpers';
+import { signIn } from '../../apis/user';
 
 function Login() {
     const navigate = useNavigate();
@@ -13,11 +15,36 @@ function Login() {
         password: '',
     });
 
-    const handleSubmit = () => {
-        console.log(form);
-        navigate('/groupproject');
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!emailRegex.test(form.email)) {
+            newErrors.email = 'Invalid email address';
+        }
+        if (form.password.trim() === '') {
+            newErrors.password = 'Password is required';
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            console.log(form);
+            const res = await signIn(form.email, form.password);
+            if (res.metadata) {
+                console.log(res.metadata.user);
+                navigate('/groupproject');
+            } else {
+                console.log(res.message);
+            }
+        }
+    };
     return (
         <>
             <div className="login-container">
@@ -106,6 +133,10 @@ function Login() {
                                 setForm({ ...form, email: e.target.value });
                             }}
                         />
+                        {errors.email && (
+                            <div className="error">{errors.email}</div>
+                        )}
+
                         <InputAuth
                             title={'PASSWORD'}
                             type={'password'}
@@ -116,6 +147,9 @@ function Login() {
                                 setForm({ ...form, password: e.target.value });
                             }}
                         />
+                        {errors.password && (
+                            <div className="error">{errors.password}</div>
+                        )}
                         <ButtonAuth
                             title={'SUBMIT'}
                             type={'submit'}

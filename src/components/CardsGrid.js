@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Card from "./Card";
-import items from "../Data";
+
 import { useParams } from "react-router-dom";
 import "./Card.scss";
 

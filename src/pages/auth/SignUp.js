@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import TeslaLogo from '../../Assets/images/TeslaLogo';
 import Footer from '../../components/Footer';
-import './SignUp.scss';
-import { useState } from 'react';
 import InputAuth from '../../components/auth/InputAuth';
 import ButtonAuth from '../../components/auth/ButtonAuth';
+import { emailRegex, usernameRegex } from '../../helpers';
+
+import './SignUp.scss';
+import { signUp } from '../../apis/user';
 
 function SignUp() {
     const navigate = useNavigate();
@@ -15,10 +19,43 @@ function SignUp() {
         confirmPassword: '',
         username2: '',
     });
+    const [errors, setErrors] = useState({});
 
-    const handleSubmit = () => {
-        console.log(form);
-        navigate('/groupproject');
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!emailRegex.test(form.email)) {
+            newErrors.email = 'Invalid email address';
+        }
+        if (form.username.trim() === '') {
+            newErrors.username = 'Username is required';
+        } else if (!usernameRegex.test(form.username)) {
+            newErrors.username = 'Username cannot contain special characters';
+        }
+        if (form.password.length < 6) {
+            newErrors.password = 'Password must be more than 6 characters';
+        }
+        if (form.confirmPassword !== form.password) {
+            newErrors.confirmPassword = 'Please check confirm password';
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            const res = await signUp(form.username, form.email, form.password);
+
+            if (res.metadata) {
+                console.log(res.metadata);
+                navigate('/groupproject/verify');
+            } else {
+                console.log(res.message);
+            }
+        }
     };
 
     return (
@@ -103,6 +140,10 @@ function SignUp() {
                             setForm({ ...form, email: e.target.value })
                         }
                     />
+                    {errors.email && (
+                        <div className="error">{errors.email}</div>
+                    )}
+
                     <InputAuth
                         title={'USERNAME'}
                         type={'text'}
@@ -113,6 +154,10 @@ function SignUp() {
                             setForm({ ...form, username: e.target.value });
                         }}
                     />
+                    {errors.username && (
+                        <div className="error">{errors.username}</div>
+                    )}
+
                     <InputAuth
                         title={'PASSWORD'}
                         type={'password'}
@@ -123,6 +168,10 @@ function SignUp() {
                             setForm({ ...form, password: e.target.value });
                         }}
                     />
+                    {errors.password && (
+                        <div className="error">{errors.password}</div>
+                    )}
+
                     <InputAuth
                         title={'CONFIRM PASSWORD'}
                         type={'password'}
@@ -136,6 +185,9 @@ function SignUp() {
                             });
                         }}
                     />
+                    {errors.confirmPassword && (
+                        <div className="error">{errors.confirmPassword}</div>
+                    )}
                 </form>
                 <ButtonAuth
                     title={'SUBMIT'}

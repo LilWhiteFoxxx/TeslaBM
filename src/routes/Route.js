@@ -10,6 +10,7 @@ import Checkout from "../components/checkoutPage/Checkout";
 import Confirmation from "../components/checkoutPage/Confirmation";
 import Login from "../pages/auth/Login";
 import SignUp from "../pages/auth/SignUp";
+import Verify from "../pages/auth/Verify";
 
 export default function MyRouter() {
   return (
@@ -51,6 +52,7 @@ export default function MyRouter() {
         </Route>
         <Route path="/groupproject/login" element={<Login/>}/>
         <Route path="/groupproject/signup" element={<SignUp/>}/>
+        <Route path="/groupproject/verify" element={<Verify/>}/>
       </Routes>
     </Router>
   );
