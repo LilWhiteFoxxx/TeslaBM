@@ -4,7 +4,7 @@
     min-height: 100vh;
     background-color: black;
     // color: #fff;
-    color: #a2a3a5;
+    color: #fff;
     justify-content: center;
     align-items: center;
 }
@@ -28,7 +28,7 @@
     }
 
     svg {
-        margin-left: 10px;;
+        margin-left: 10px;
     }
 
     .input-form {
@@ -65,10 +65,11 @@
 .navLogo {
     margin-top: 30px;
     margin-bottom: 30px;
-    width: 8%;
+    width: 10%;
     &:hover {
         cursor: pointer;
     }
+    // color: #fff;
 }
 
 .tds-icon {
@@ -84,4 +85,13 @@
     // background-color: #fff;
     // transform: var(--tds-icon--transform);
     // transition: color 0.33s ease, transform 0.5s cubic-bezier(0.5, 0, 0, 0.75);
+}
+
+.link {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #a2a3a5;
 }

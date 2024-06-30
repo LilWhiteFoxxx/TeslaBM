@@ -2,14 +2,14 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "../App";
-import ShopPage from "../components/shopPage/ShopPage";
+import ShopPage from "../pages/home/ShopPage";
 import TestPage from "../pages/TestPage";
-import ProductPage from "../components/productPage/ProductPage";
+import ProductPage from "../pages/product/ProductPage";
 import Cart from "../components/cart/Cart";
 import Checkout from "../components/checkoutPage/Checkout";
 import Confirmation from "../components/checkoutPage/Confirmation";
-import Login from "../pages/Login";
-import SignUp from "../pages/SignUp";
+import Login from "../pages/auth/Login";
+import SignUp from "../pages/auth/SignUp";
 
 export default function MyRouter() {
   return (

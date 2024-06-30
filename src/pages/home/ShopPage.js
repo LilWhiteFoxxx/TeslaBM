@@ -1,16 +1,16 @@
 import React from "react";
 import "./ShopPage.scss";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import HeroCarousel from "./HeroCarousel";
-import VehicleAccessories from "./VehicleAccessories";
+import HeroCarousel from "../../components/shopPage/HeroCarousel";
+import VehicleAccessories from "../../components/shopPage/VehicleAccessories";
 import modelS from "../../Assets/images/modelS.avif";
 import model3 from "../../Assets/images/model3.avif";
 import modelX from "../../Assets/images/modelX.avif";
 import modelY from "../../Assets/images/modelY.avif";
 import charging from "../../Assets/images/charging.avif";
 import lifestyle from "../../Assets/images/lifestyle.avif";
-import ShopAccessories from "./ShopAccessories";
-import Tesfayedev from "./Tesfayedev";
+import ShopAccessories from "../../components/shopPage/ShopAccessories";
+import Tesfayedev from "../../components/shopPage/Tesfayedev";
 
 const ShopPage = () => {
   return (

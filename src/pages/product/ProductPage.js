@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import "./ProductPage.scss";
-import CardsGrid from "../CardsGrid";
+import CardsGrid from "../../components/CardsGrid";
 import items from "../../Data";
 
 const ProductPage = () => {

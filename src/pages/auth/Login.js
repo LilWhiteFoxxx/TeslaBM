@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import TeslaLogo from '../Assets/images/TeslaLogo';
-import Footer from '../components/Footer';
+import TeslaLogo from '../../Assets/images/TeslaLogo';
+import Footer from '../../components/Footer';
 import './Login.scss';
 import { useNavigate } from 'react-router-dom';
+import InputAuth from '../../components/auth/InputAuth';
+import ButtonAuth from '../../components/auth/ButtonAuth';
 
 function Login() {
     const navigate = useNavigate();
@@ -104,39 +106,36 @@ function Login() {
                                 setForm({ ...form, email: e.target.value });
                             }}
                         />
-                        <label htmlFor="password">PASSWORD</label>
-                        <input
-                            type="password"
+                        <InputAuth
+                            title={'PASSWORD'}
+                            type={'password'}
+                            placehoder={'Enter your password'}
+                            className={'sign-in-form__input'}
                             value={form.password}
-                            id="password"
-                            className="sign-in-form__input"
-                            placeholder="Enter your password"
-                            onChange={(e) =>
-                                setForm({ ...form, password: e.target.value })
-                            }
+                            onChange={(e) => {
+                                setForm({ ...form, password: e.target.value });
+                            }}
                         />
-                        <button
-                            type="submit"
-                            className="sign-in-form__button"
+                        <ButtonAuth
+                            title={'SUBMIT'}
+                            type={'submit'}
+                            className={'sign-in-form__button'}
                             onClick={handleSubmit}
-                        >
-                            SUBMIT
-                        </button>
+                        />
                     </form>
                     <div className="sign-in-form__link">
                         <a href="/#">FORGOT EMAIL?</a> |{'  '}
                         <a href="/#">FORGOT PASSWORD?</a>
                     </div>
                     <div className="sign-in-form__link">OR</div>
-                    <button
-                        type="submit"
-                        className="sign-in-form__button"
+                    <ButtonAuth
+                        title={'CREATE ACCOUNT'}
+                        type={'submit'}
+                        className={'sign-in-form__button'}
                         onClick={() => {
                             navigate('/groupproject/signup');
                         }}
-                    >
-                        CREATE ACCOUNT
-                    </button>
+                    />
                 </div>
                 <footer>
                     <Footer />

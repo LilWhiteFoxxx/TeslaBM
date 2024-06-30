@@ -3,7 +3,7 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: black;
-    color: #a2a3a5;
+    color: #fff;
     justify-content: center;
     align-items: center;
 }
@@ -15,6 +15,7 @@
     &:hover {
         cursor: pointer;
     }
+    // color: #fff;
 }
 
 .sign-in-form {
@@ -29,7 +30,7 @@
     }
 
     svg {
-        margin-left: 10px;;
+        margin-left: 10px;
     }
 
     &__title {
@@ -47,7 +48,7 @@
         border: 1px solid #333;
         // border-radius: 5px;
         background-color: black;
-        color: #fff;
+        color: #a2a3a5;
     }
 
     &__button {
@@ -72,6 +73,7 @@
         margin-top: 30px;
         text-align: center;
         font-size: 12px;
+        color: #a2a3a5;
 
         a {
             // color: #fff;
