@@ -1,15 +1,23 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import TeslaLogo from '../../Assets/images/TeslaLogo';
 import Footer from '../../components/Footer';
-import './Login.scss';
-import { useNavigate } from 'react-router-dom';
 import InputAuth from '../../components/auth/InputAuth';
 import ButtonAuth from '../../components/auth/ButtonAuth';
 import { emailRegex } from '../../helpers';
 import { signIn } from '../../apis/user';
+import { login } from '../../app/features/authSlice';
+
+import './Login.scss';
 
 function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    // const { user } = useSelector(state => state.auth);
     const [form, setForm] = useState({
         email: '',
         password: '',
@@ -36,15 +44,19 @@ function Login() {
         e.preventDefault();
         if (validateForm()) {
             console.log(form);
-            const res = await signIn(form.email, form.password);
+            const res = await signIn(form);
             if (res.metadata) {
                 console.log(res.metadata.user);
+                dispatch(login(res.metadata));
+                toast.success('Login success');
                 navigate('/groupproject');
             } else {
+                toast.error(res.message);
                 console.log(res.message);
             }
         }
     };
+
     return (
         <>
             <div className="login-container">
@@ -56,6 +68,7 @@ function Login() {
                 </div>
                 <div className="sign-in-form">
                     <h1 className="sign-in-form__title">SIGN IN</h1>
+                    {/* {user ? <div>{user.email}</div> : 'nothing'} */}
                     <form>
                         <div style={{ display: 'flex' }}>
                             <label>EMAIL</label>

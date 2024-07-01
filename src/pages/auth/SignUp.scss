@@ -7,6 +7,20 @@
     color: #fff;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+
+    .navLogo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        // margin-bottom: 30px;
+        width: 10%;
+        &:hover {
+            cursor: pointer;
+        }
+        // color: #fff;
+    }
 }
 
 .sign-up-form {
@@ -67,16 +81,6 @@
     &:hover {
         background-color: #f3425f;
     }
-}
-
-.navLogo {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    width: 10%;
-    &:hover {
-        cursor: pointer;
-    }
-    // color: #fff;
 }
 
 .tds-icon {

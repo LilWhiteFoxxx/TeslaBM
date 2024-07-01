@@ -9,6 +9,7 @@ import { emailRegex, usernameRegex } from '../../helpers';
 
 import './SignUp.scss';
 import { signUp } from '../../apis/user';
+import { toast } from 'react-toastify';
 
 function SignUp() {
     const navigate = useNavigate();
@@ -47,12 +48,19 @@ function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            const res = await signUp(form.username, form.email, form.password);
+            const payload = {
+                username: form.username,
+                email: form.email,
+                password: form.password,
+            };
+            const res = await signUp(payload);
 
             if (res.metadata) {
                 console.log(res.metadata);
+                toast.success('Register success!')
                 navigate('/groupproject/verify');
             } else {
+                toast.error(res.message)
                 console.log(res.message);
             }
         }

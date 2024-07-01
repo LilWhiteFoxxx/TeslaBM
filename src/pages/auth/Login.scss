@@ -6,20 +6,22 @@
     color: #fff;
     justify-content: center;
     align-items: center;
+
+    .navLogo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        width: 8%;
+        &:hover {
+            cursor: pointer;
+        }
+        // color: #fff;
+    }
 }
 
-.navLogo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    width: 8%;
-    &:hover {
-        cursor: pointer;
-    }
-    // color: #fff;
-}
+
 
 .sign-in-form {
     // background-color: #1a1a1a;

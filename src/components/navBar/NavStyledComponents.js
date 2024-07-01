@@ -54,9 +54,9 @@ export const StyledNav = styled.nav`
             width: 120px;
         }
     }
-    hr {
-        margin-left: 105px;
-    }
+    // hr {
+    //     margin-left: 105px;
+    // }
     .navHoverEffect {
         margin-left: 5px;
     }

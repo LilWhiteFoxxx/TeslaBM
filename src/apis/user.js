@@ -1,12 +1,13 @@
 import axios from '../configs/axios.config';
 
 // Define the sign-in function
-export const signIn = async (email, password) => {
+export const signIn = async (payload) => {
     try {
-        const response = await axios.post('/login', {
-            email,
-            password,
-        });
+        const body = {
+            email: payload.email,
+            password: payload.password,
+        };
+        const response = await axios.post('/login', body);
 
         if (response.metadata) {
             const { accessToken } = response.metadata;
@@ -21,13 +22,14 @@ export const signIn = async (email, password) => {
     }
 };
 
-export const signUp = async (username, email, password) => {
+export const signUp = async (payload) => {
     try {
-        const response = await axios.post('/register', {
-            username,
-            email,
-            password,
-        });
+        const body = {
+            username: payload.username,
+            email: payload.email,
+            password: payload.password,
+        };
+        const response = await axios.post('/register', body);
 
         return response;
     } catch (error) {

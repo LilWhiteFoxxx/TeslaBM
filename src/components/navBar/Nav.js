@@ -9,11 +9,14 @@ import SearchBar from './SearchBar';
 import CartBtn from './CartBtn';
 import { useParams, useLocation } from 'react-router-dom';
 import NavSideMenu from './navSideMenu/NavSideMenu';
+import { useSelector } from 'react-redux';
 
 export default function Nav() {
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
+
+    const { user } = useSelector(state => state.auth)
 
     //Refs for link locations and sizes
     const navRefs = useRef(navList.map(() => createRef()));

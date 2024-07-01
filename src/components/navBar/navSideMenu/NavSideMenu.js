@@ -1,10 +1,13 @@
 import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
-import xButton from '../../../Assets/images/x-button.svg';
-// import arrow from '../../../Assets/images/arrow.svg';
-import globe from '../../../Assets/images/globe.svg';
-import { ReactComponent as SearchBtn } from '../../../Assets/images/search.svg';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+
+import { ReactComponent as SearchBtn } from '../../../Assets/images/search.svg';
+import xButton from '../../../Assets/images/x-button.svg';
+import globe from '../../../Assets/images/globe.svg';
+import { logout } from '../../../app/features/authSlice';
+import { toast } from 'react-toastify';
 
 const StyledSideMenu = styled.div`
     * {
@@ -166,6 +169,25 @@ const StyledSideMenu = styled.div`
             transform: rotate(90deg);
         }
     }
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-avatar {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        margin-right: 10px;
+        object-fit: cover;
+    }
+
+    .user-welcome {
+        font-size: 18px;
+        font-weight: bold;
+    }
 `;
 
 export default function NavSideMenu({
@@ -175,6 +197,8 @@ export default function NavSideMenu({
 }) {
     const navigate = useNavigate();
     const searchRef = useRef();
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
     const [inputValue, setInputValue] = useState('');
     // const [showSubCategories, setShowSubCategories] = useState(false);
     // const [subCategories, setSubCategories] = useState([]);
@@ -207,6 +231,11 @@ export default function NavSideMenu({
         </li>
     ));
 
+    const handleLogOut = () => {
+        dispatch(logout());
+        toast.success('Logout success!');
+    };
+
     return (
         <StyledSideMenu showSideMenu={showSideMenu}>
             <div className="sideMenuModalBackdrop" onClick={handleClose}></div>
@@ -232,10 +261,32 @@ export default function NavSideMenu({
                     <ul> {mainNavLinks}</ul>
                 </div>
                 <div className="secondarySideMenuNav">
+                    {user && (
+                        <div className="user-info">
+                            <img
+                                className="user-avatar"
+                                src={
+                                    user.avatar ||
+                                    'https://i.pinimg.com/originals/6a/2c/fd/6a2cfda10fb8e3167ebaf6d63279864c.png'
+                                }
+                                alt={`${user.username}'s avatar`}
+                            />
+                            <div className="user-welcome">{user.email}</div>
+                        </div>
+                    )}
                     <ul>
                         <li>Shop FAQ</li>
                         <li>Contact US</li>
-                        <li onClick={() => navigate('login')}>Sign In</li>
+                        {user ? (
+                            <>
+                                <li onClick={() => navigate('profile')}>
+                                    Profile Info
+                                </li>
+                                <li onClick={handleLogOut}>Log Out</li>
+                            </>
+                        ) : (
+                            <li onClick={() => navigate('login')}>Sign In</li>
+                        )}
                         <li className="languageSelector">
                             <img src={globe} alt="" />
                             <div>
