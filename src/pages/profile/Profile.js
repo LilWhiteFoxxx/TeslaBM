@@ -36,7 +36,7 @@ const ProfilePage = () => {
             <div className="profile-header">
                 <img src={user.avatar} alt="Avatar" className="avatar" />
                 <h2>{user.firstname} {user.lastname}</h2>
-                <p>@{user.username}</p>
+                <p className='text-red-400'>@{user.username}</p>
             </div>
 
             {isEditing ? (

@@ -22,6 +22,10 @@
     url(./Assets/fonts/GothamSSm-Medium_Web.woff2) format("woff2");
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;

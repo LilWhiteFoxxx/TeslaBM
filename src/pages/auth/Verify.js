@@ -16,8 +16,8 @@ function Verify() {
                 <TeslaLogo />
             </div>
             <div className="verify">
-                <h1 className="verify-title">Verify</h1>
-                <div className='verify-content'>Please check your email to complete registration
+                <h1 className="verify-title">VERIFY</h1>
+                <div className='verify-content'>Please check your email to complete 
                     <div>Thanks you!</div>
                 </div>
                 

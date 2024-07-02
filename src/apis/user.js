@@ -1,4 +1,4 @@
-import axios from '../configs/axios.config';
+import axios from '../axios/axios.config';
 
 // Define the sign-in function
 export const signIn = async (payload) => {
@@ -28,6 +28,8 @@ export const signUp = async (payload) => {
             username: payload.username,
             email: payload.email,
             password: payload.password,
+            firstName: payload.firstName,
+            lastName: payload.lastName
         };
         const response = await axios.post('/register', body);
 
@@ -37,3 +39,18 @@ export const signUp = async (payload) => {
         throw error; // Propagate the error to be handled by the calling function
     }
 };
+
+export const forgotPassword = async (payload) => {
+    try {
+        console.log(payload);
+        const body = {
+            email: payload
+        };
+        const response = await axios.post('/forgotpassword', body);
+
+        return response;
+    } catch (error) {
+        console.error('Forgot password error:', error.response?.data || error.message);
+        throw error; // Propagate the error to be handled by the calling function
+    }
+}

@@ -1,38 +1,30 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import TeslaLogo from '../../Assets/images/TeslaLogo';
 import Footer from '../../components/Footer';
-import InputAuth from '../../components/auth/InputAuth';
 import ButtonAuth from '../../components/auth/ButtonAuth';
 import { emailRegex } from '../../helpers';
-import { signIn } from '../../apis/user';
-import { login } from '../../app/features/authSlice';
+import { forgotPassword } from '../../apis/user';
 
 import './Login.scss';
 
-function Login() {
+function ForgotPassword() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    // const { user } = useSelector(state => state.auth);
-    const [form, setForm] = useState({
-        email: '',
-        password: '',
-    });
+    const [email, setEmail] = useState('');
 
     const [errors, setErrors] = useState({});
 
     const validateForm = () => {
         const newErrors = {};
 
-        if (!emailRegex.test(form.email)) {
+        if (!emailRegex.test(email)) {
             newErrors.email = 'Invalid email address';
         }
-        if (form.password.trim() === '') {
-            newErrors.password = 'Password is required';
+        if (email.trim() === '') {
+            newErrors.email = 'Email is required';
         }
 
         setErrors(newErrors);
@@ -43,13 +35,12 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log(form);
-            const res = await signIn(form);
+            console.log(email);
+            const res = await forgotPassword(email);
             if (res.metadata) {
-                console.log(res.metadata.user);
-                dispatch(login(res.metadata));
-                toast.success('Login success');
-                navigate('/groupproject');
+                // console.log(res.metadata);
+                toast.success('Success');
+                navigate('/groupproject/verify');
             } else {
                 toast.error(res.message);
                 console.log(res.message);
@@ -67,8 +58,8 @@ function Login() {
                     <TeslaLogo />
                 </div>
                 <div className="sign-in-form">
-                    <h1 className="sign-in-form__title">SIGN IN</h1>
-                    {/* {user ? <div>{user.email}</div> : 'nothing'} */}
+                    <h1 className="sign-in-form__title">VERIFY INDENTITY</h1>
+                    <div className='text-[14px] mb-4 text-[#5c5e62]'>Enter your email address linked your app account</div>
                     <form>
                         <div style={{ display: 'flex' }}>
                             <label>EMAIL</label>
@@ -138,50 +129,22 @@ function Login() {
 
                         <input
                             type="email"
-                            value={form.email}
+                            value={email}
                             id="email"
                             className="sign-in-form__input"
                             placeholder="Enter your email address"
-                            onChange={(e) => {
-                                setForm({ ...form, email: e.target.value });
-                            }}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         {errors.email && (
                             <div className="error">{errors.email}</div>
                         )}
-
-                        <InputAuth
-                            title={'PASSWORD'}
-                            type={'password'}
-                            placehoder={'Enter your password'}
-                            className={'sign-in-form__input'}
-                            value={form.password}
-                            onChange={(e) => {
-                                setForm({ ...form, password: e.target.value });
-                            }}
-                        />
-                        {errors.password && (
-                            <div className="error">{errors.password}</div>
-                        )}
-                        <ButtonAuth
-                            title={'SUBMIT'}
-                            type={'submit'}
-                            className={'sign-in-form__button'}
-                            onClick={handleSubmit}
-                        />
                     </form>
-                    <div className="sign-in-form__link">
-                        <a href="/#">FORGOT EMAIL?</a> |{'  '}
-                        <a href="/groupproject/forgotpassword">FORGOT PASSWORD?</a>
-                    </div>
-                    <div className="sign-in-form__link">OR</div>
+
                     <ButtonAuth
-                        title={'CREATE ACCOUNT'}
+                        title={'SUBMIT'}
                         type={'submit'}
                         className={'sign-in-form__button'}
-                        onClick={() => {
-                            navigate('/groupproject/signup');
-                        }}
+                        onClick={handleSubmit}
                     />
                 </div>
                 <footer>
@@ -191,4 +154,4 @@ function Login() {
         </>
     );
 }
-export default Login;
+export default ForgotPassword;
