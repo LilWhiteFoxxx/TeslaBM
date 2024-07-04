@@ -1,3 +1,9 @@
 .product-img-main {
-    clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0% 100%)
+    clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0% 100%);
+}
+
+.swiper-thumb {
+    img:last-child {
+        clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0% 100%);
+    }
 }

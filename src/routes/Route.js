@@ -14,6 +14,8 @@ import Verify from '../pages/auth/Verify';
 import ProfilePage from '../pages/profile/Profile';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ProductDetail from '../pages/product/ProductDetail';
+import PersonalInfoForm from '../components/profile/PersonalInfoForm';
+import Wallet from '../components/profile/Wallet';
 
 export default function MyRouter() {
     return (
@@ -61,7 +63,13 @@ export default function MyRouter() {
                 <Route path="/groupproject/login" element={<Login />} />
                 <Route path="/groupproject/signup" element={<SignUp />} />
                 <Route path="/groupproject/verify" element={<Verify />} />
-                <Route path="/groupproject/profile" element={<ProfilePage />} />
+                <Route path="/groupproject/profile" element={<ProfilePage />}>
+                    <Route index element={<PersonalInfoForm />} />
+                    <Route
+                        path="/groupproject/profile/wallet"
+                        element={<Wallet />}
+                    />
+                </Route>
                 <Route
                     path="/groupproject/forgotpassword"
                     element={<ForgotPassword />}

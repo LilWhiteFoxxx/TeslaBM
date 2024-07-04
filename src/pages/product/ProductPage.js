@@ -1,11 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProductPage.scss";
 import CardsGrid from "../../components/CardsGrid";
 import items from "../../Data";
 
 const ProductPage = () => {
   const params = useParams();
+  const navigate = useNavigate()
 
   return (
     <div style={{ paddingTop: "100px" }} className='productsPage'>
@@ -24,6 +25,7 @@ const ProductPage = () => {
             {/* map through the subCategories and send each list of products to the Cards Grid */}
             {category.subCategories.map((sub, index) => (
               <div key={index} className='atHome'>
+                <button onClick={() => navigate('/groupproject/productdetail')}>click me</button>
                 <h3>{sub.subCategory.replace(/-/g, " ")}</h3>
                 <CardsGrid products={sub.products} />
               </div>

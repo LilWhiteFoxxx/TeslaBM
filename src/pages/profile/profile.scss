@@ -1,0 +1,30 @@
+.profile-page-container {
+    display: flex;
+    height: 100vh;
+    // margin-top: 100px;
+    // padding-top: 30px;
+    // padding-bottom: 30px;
+    // padding-inline-start: 40px;
+    // padding-inline-end: 40px;
+    padding: 100px;
+
+
+    .sidebar-container {
+        width: 250px;
+        background-color: #f4f4f4;
+    }
+
+    .personal-info-form {
+        flex: 1;
+        padding: 150px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+}
