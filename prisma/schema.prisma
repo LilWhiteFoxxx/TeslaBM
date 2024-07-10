@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id          Int       @id @default(autoincrement())
+  username    String    @db.VarChar(200)
+  email       String    @db.VarChar(200)
+  password    String    @db.VarChar(200)
+  firstName   String?   @db.VarChar(50)
+  lastName    String?   @db.VarChar(50)
+  avatar      String?   @db.VarChar(255)
+  gender      String?   @db.VarChar(6)
+  dob         DateTime? @db.DateTime()
+  phoneNumber String?   @db.VarChar(20)
+  roleId      Int       @default(2)
+  isVerify    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  role        role      @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address     address[]
+  cart        cart[]
+  order       order[]
+  payment     payment[]
+  review      review[]
+}
+
+model role {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(10)
+  users users[]
+}
+
+model session {
+  id           Int       @id @default(autoincrement())
+  email        String    @db.VarChar(200)
+  refreshToken String    @db.VarChar(255)
+  expiredAt    DateTime? @db.Date()
+  createdAt    DateTime  @default(now())
+}
+
+model address {
+  id        Int     @id @default(autoincrement())
+  country   String  @db.VarChar(30)
+  city      String  @db.VarChar(30)
+  district  String  @db.VarChar(30)
+  ward      String  @db.VarChar(30)
+  street    String? @db.VarChar(100)
+  isDefault Boolean @default(false)
+  userId    Int
+  users     users?  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  order     order[]
+}
+
+model cart {
+  id       Int        @id @default(autoincrement())
+  userId   Int
+  users    users?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cartItem cartItem[]
+}
+
+model cartItem {
+  id            Int          @id @default(autoincrement())
+  cartId        Int
+  motorDetailId Int?
+  accessoriesId Int?
+  quantity      Int
+  cart          cart?        @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  motorDetail   motorDetail? @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accessories   accessories? @relation(fields: [accessoriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model order {
+  id            Int          @id @default(autoincrement())
+  date          DateTime     @db.DateTime()
+  total         Int
+  userId        Int
+  paymentId     Int
+  addressId     Int
+  orderStatusId Int
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  users         users?       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  payment       payment?     @relation(fields: [paymentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address       address?     @relation(fields: [addressId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderStatus   orderStatus? @relation(fields: [orderStatusId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderLine     orderLine[]
+}
+
+model orderStatus {
+  id     Int     @id @default(autoincrement())
+  status String  @db.VarChar(20)
+  order  order[]
+}
+
+model orderLine {
+  id            Int          @id @default(autoincrement())
+  quantity      Int
+  price         Int
+  orderId       Int
+  motorDetailId Int?
+  accessoriesId Int?
+  order         order?       @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  motorDetail   motorDetail? @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accessories   accessories? @relation(fields: [accessoriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  review        review[]
+}
+
+model payment {
+  id            Int          @id @default(autoincrement())
+  provider      String       @db.VarChar(100)
+  accountNumber String       @db.VarChar(20)
+  expiredAt     DateTime     @db.DateTime()
+  isDefault     Boolean      @default(false)
+  userId        Int
+  paymentTypeId Int
+  order         order[]
+  users         users?       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  paymentType   paymentType? @relation(fields: [paymentTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model paymentType {
+  id      Int       @id @default(autoincrement())
+  type    String    @db.VarChar(30)
+  payment payment[]
+}
+
+model category {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(100)
+  motor motor[]
+}
+
+model motor {
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(100)
+  slug          String        @db.VarChar(255)
+  desc          String        @db.VarChar(255)
+  originalPrice Int
+  categoryId    Int
+  category      category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  motorDetail   motorDetail[]
+  accessories   accessories[]
+}
+
+//  abc
+model motorDetail {
+  id            Int           @id @default(autoincrement())
+  originalPrice Int
+  salePrice     Int
+  motorId       Int
+  colorId       Int
+  cartItem      cartItem[]
+  orderLine     orderLine[]
+  images        images[]
+  motor         motor?        @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  inventories   inventories[]
+}
+
+model images {
+  id                  Int                @id @default(autoincrement())
+  path                String             @db.VarChar(255)
+  motorDetailId       Int?
+  accessoriesDetailId Int?
+  motorDetail         motorDetail?       @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accessoriesDetail   accessoriesDetail? @relation(fields: [accessoriesDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model color {
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(20)
+  motorDetail       motorDetail[]
+  accessoriesDetail accessoriesDetail[]
+}
+
+model accessories {
+  id            Int         @id @default(autoincrement())
+  name          String      @db.VarChar(100)
+  slug          String      @db.VarChar(255)
+  desc          String      @db.VarChar(255)
+  originalPrice Int
+  motorId       Int
+  cartItem      cartItem[]
+  orderLine     orderLine[]
+  motor         motor?      @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model accessoriesDetail {
+  id            Int           @id @default(autoincrement())
+  originalPrice Int
+  salePrice     Int
+  colorId       Int
+  color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  images        images[]
+  inventories   inventories[]
+}
+
+model review {
+  id          Int        @id @default(autoincrement())
+  star        Float      @db.Float
+  comment     String     @db.VarChar(255)
+  userId      Int        @db.Int
+  orderLineId Int        @db.Int
+  users       users?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderLine   orderLine? @relation(fields: [orderLineId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model inventories {
+  id                  Int                @id @default(autoincrement())
+  motorDetailId       Int?
+  accessoriesDetailId Int?
+  stock               Int
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  motorDetail         motorDetail?       @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accessoriesDetail   accessoriesDetail? @relation(fields: [accessoriesDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
