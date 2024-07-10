@@ -17,8 +17,8 @@ const PersonalInfoForm = () => {
         lastName: user?.lastName,
         email: user?.email,
         phoneNumber: user?.phoneNumber,
-        gender: user?.sex ? user?.sex : 'male',
-        dob: user?.birthDay ? formatDate(user?.birthDay) : '',
+        gender: user?.gender ? user?.gender : 'male',
+        dob: user?.dob ? formatDate(user?.dob) : '',
     });
 
     const [errors, setErrors] = useState({});
@@ -68,8 +68,8 @@ const PersonalInfoForm = () => {
             lastName: user?.lastName,
             email: user?.email,
             phoneNumber: user?.phoneNumber,
-            gender: user?.sex,
-            dob: user?.birthDay ? formatDate(user?.birthDay) : '',
+            gender: user?.gender,
+            dob: user?.dob ? formatDate(user?.dob) : '',
         });
         setErrors({});
     };
