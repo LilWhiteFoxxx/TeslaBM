@@ -1,7 +1,7 @@
 'use strict';
 
 const UserService = require('../services/user.service');
-const { OK, CREATED, SuccessResponse } = require('../core/succes.response');
+const { OK, CREATED, SuccessResponse } = require('../core/success.response');
 
 class UserController {
     updateProfile = async (req, res, next) => {

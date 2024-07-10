@@ -1,7 +1,7 @@
 'use strict'
 
 const FirebaseService = require("../services/firebase.service")
-const { OK, CREATED, SuccessResponse} = require('../core/succes.response')
+const { OK, CREATED, SuccessResponse} = require('../core/success.response')
 
 class FirebaseController {
     uploadToFirebase  = async(req, res, next) => {

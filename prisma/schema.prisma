@@ -145,7 +145,7 @@ model category {
 model motor {
   id            Int           @id @default(autoincrement())
   name          String        @db.VarChar(100)
-  slug          String        @db.VarChar(255)
+  slug          String        @unique
   desc          String        @db.VarChar(255)
   originalPrice Int
   categoryId    Int
@@ -201,7 +201,7 @@ model accessoriesDetail {
   id            Int           @id @default(autoincrement())
   originalPrice Int
   salePrice     Int
-  colorId       Int
+  colorId       Int?
   color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   images        images[]
   inventories   inventories[]
