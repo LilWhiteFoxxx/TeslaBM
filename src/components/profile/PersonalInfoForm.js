@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 
+import { updateInfo } from '../../app/features/authSlice';
+import { uploadUserInfo } from '../../apis/user';
 import { formatDate } from '../../utils';
 import InputForm from './InputForm';
 
 import './personalInfoForm.scss';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const PersonalInfoForm = () => {
+    const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
     const [formValues, setFormValues] = useState({
         firstName: user?.firstName,
@@ -59,6 +65,15 @@ const PersonalInfoForm = () => {
         setErrors(validationErrors);
         if (Object.keys(validationErrors).length === 0) {
             console.log(formValues);
+            const res = await uploadUserInfo(formValues)
+            if (res.metadata) {
+                console.log(res);
+                dispatch(updateInfo(formValues));
+                toast.success('Update success!');
+            } else {
+                toast.error(res.message);
+                console.log(res.message);
+            }
         }
     };
 

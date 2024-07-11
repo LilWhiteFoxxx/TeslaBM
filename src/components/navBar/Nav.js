@@ -10,13 +10,16 @@ import CartBtn from './CartBtn';
 import { useParams, useLocation } from 'react-router-dom';
 import NavSideMenu from './navSideMenu/NavSideMenu';
 import { useSelector } from 'react-redux';
+import { getAllCategory } from '../../apis/category';
+import wallConnector from "../../Assets/images/feature_wall_connector.avif";
+
 
 export default function Nav() {
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
 
-    const { user } = useSelector(state => state.auth)
+    const { user } = useSelector((state) => state.auth);
 
     //Refs for link locations and sizes
     const navRefs = useRef(navList.map(() => createRef()));
@@ -34,6 +37,8 @@ export default function Nav() {
     const [showSideMenu, setShowSideMenu] = useState(false);
 
     const [solidNav, setSolidNav] = useState(false);
+
+    const [subCate, setSubCate] = useState([]);
 
     const handleEnter = (ref, item) => {
         //this will take the ref info break it into a more manageable object
@@ -129,9 +134,30 @@ export default function Nav() {
         }
     }, [location.pathname, params]);
 
+    useEffect(() => {
+        (async () => {
+            const res = await getAllCategory();
+            console.log(res.metadata);
+            setSubCate(res.metadata);
+            console.log(subCate);
+        })();
+    }, []);
+
+    const categoryList = [
+        {
+            category: 'Motors',
+            subCategories: subCate,
+            promo: { title: "Motor", image:'https://i0.wp.com/www.asphaltandrubber.com/wp-content/uploads/2017/04/BMW-HP4-Race-18-scaled.jpg?fit=2560%2C1707&ssl=1' },
+        },
+        {
+            category: 'Accessories',
+            subCategories: subCate,
+            promo: { title: "Accessories", image: 'https://rparts-sites.s3.amazonaws.com/23908d49235005b9c1c9e417b84fee8e/design/main-slider/f900gs.webp' },
+        },
+    ];
     //create a list of the nav links needed from the navData list
     //assigns each link its subcategory and option data
-    const mainNavLinks = navList.map((listItem, i) => (
+    const mainNavLinks = categoryList.map((listItem, i) => (
         <li
             key={i}
             ref={navRefs.current[i]}

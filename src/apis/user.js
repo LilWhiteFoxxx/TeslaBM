@@ -24,18 +24,15 @@ export const signIn = async (payload) => {
 
 export const signUp = async (payload) => {
     try {
+        console.log(payload);
         const body = {
-            username: payload.username,
-            email: payload.email,
-            password: payload.password,
-            firstName: payload.firstName,
-            lastName: payload.lastName
+            email: payload
         };
-        const response = await axios.post('/register', body);
+        const response = await axios.post('/forgotpassword', body);
 
         return response;
     } catch (error) {
-        console.error('Sign-up error:', error.response?.data || error.message);
+        console.error('Forgot password error:', error.response?.data || error.message);
         throw error; // Propagate the error to be handled by the calling function
     }
 };
@@ -52,5 +49,26 @@ export const forgotPassword = async (payload) => {
     } catch (error) {
         console.error('Forgot password error:', error.response?.data || error.message);
         throw error; // Propagate the error to be handled by the calling function
+    }
+}
+
+export const uploadUserInfo = async (payload) => {
+    try {
+        console.log(payload);
+        const body = {
+            username: payload.username,
+            email: payload.email,
+            firstName: payload.firstName,
+            lastName: payload.lastName,
+            gender: payload.gender,
+            dob: payload.dob,
+            phoneNumber: payload.phoneNumber
+        };
+        const response = await axios.post('/user/updateprofile', body);
+
+        return response;
+    } catch (error) {
+        console.error('upload userinfo error:', error.response?.data || error.message);
+        throw error; 
     }
 }

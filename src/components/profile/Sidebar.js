@@ -31,7 +31,7 @@ function Sidebar() {
                     src="https://digitalassets-shop.tesla.com/image/upload/f_auto,q_auto/v1/content/dam/tesla/CAR_ACCESSORIES/MODEL_X/INTERIOR/1562263-00-A_0_2000.jpg"
                     alt="Profile"
                 />
-                <h2 className="my-2 font-bold">{user.username}</h2>
+                <h2 className="my-2 font-bold">{user?.username}</h2>
                 <p>38.00$</p>
             </div>
             <div className="">
