@@ -3,14 +3,32 @@
 const CategoryService = require('../services/category.service');
 const { OK, CREATED, SuccessResponse } = require('../core/success.response');
 
-
 class CategoryController {
     getAllCategory = async (req, res, next) => {
         try {
             const { limit, offset } = req.query;
-            const categories = await CategoryService.getAllCategory(parseInt(limit), parseInt(offset));
+            const categories = await CategoryService.getAllCategory(
+                parseInt(limit),
+                parseInt(offset)
+            );
             new SuccessResponse({
                 message: 'Get all category success!',
+                metadata: categories,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getAllCategoryOfAccessories = async (req, res, next) => {
+        try {
+            const { limit, offset } = req.query;
+            const categories = await CategoryService.getAllCategoryOfAccessories(
+                parseInt(limit),
+                parseInt(offset)
+            );
+            new SuccessResponse({
+                message: 'Get all category of accessories success!',
                 metadata: categories,
             }).send(res);
         } catch (error) {
@@ -28,10 +46,13 @@ class CategoryController {
             }
 
             const newCategory = await CategoryService.createCategory(name);
-            new SuccessResponse({
-                message: 'Category created successfully!',
-                metadata: newCategory,
-            }, CREATED).send(res);
+            new SuccessResponse(
+                {
+                    message: 'Category created successfully!',
+                    metadata: newCategory,
+                },
+                CREATED
+            ).send(res);
         } catch (error) {
             next(error);
         }
@@ -49,10 +70,15 @@ class CategoryController {
             }
 
             if (!name) {
-                throw new BadRequestError('Category name is required for update!');
+                throw new BadRequestError(
+                    'Category name is required for update!'
+                );
             }
 
-            const updatedCategory = await CategoryService.updateCategory(categoryId, name);
+            const updatedCategory = await CategoryService.updateCategory(
+                categoryId,
+                name
+            );
             new SuccessResponse({
                 message: 'Category updated successfully!',
                 metadata: updatedCategory,

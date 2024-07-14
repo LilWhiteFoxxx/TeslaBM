@@ -1,0 +1,154 @@
+'use strict';
+
+const AccessoriesService = require('../services/acesssories.service');
+const { OK, CREATED, SuccessResponse } = require('../core/success.response');
+
+class MotorController {
+    getAllMotorByCategory = async (req, res, next) => {
+        try {
+            const { categoryId, limit, offset } = req.query;
+            const motors = await AccessoriesService.getAllMotorByCategory(
+                parseInt(categoryId),
+                parseInt(limit),
+                parseInt(offset)
+            );
+            new SuccessResponse({
+                message: 'Get all motors by category success!',
+                metadata: motors,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getMotorDetail = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const motor = await AccessoriesService.getMotorDetail(parseInt(id));
+            new SuccessResponse({
+                message: 'Get motor detail success!',
+                metadata: motor,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getAllAcessories = async (req, res, next) => {
+        try {
+            const { limit, offset } = req.query;
+            const motors = await AccessoriesService.getAllAcessories(
+                parseInt(limit),
+                parseInt(offset)
+            );
+            new SuccessResponse({
+                message: 'Get all motors success!',
+                metadata: motors,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    // Tạo một motor mới
+    createAccessories = async (req, res, next) => {
+        try {
+            const {
+                name,
+                desc,
+                originalPrice,
+                motorId,
+                mfg,
+                img,
+                imgHover,
+                accessoriesDetails = [], // danh sách chi tiết motor để thêm
+                images = [], // danh sách hình ảnh để thêm
+            } = req.body;
+
+            // Kiểm tra các thông tin cần thiết
+            if (!name || !desc || !originalPrice || !motorId || !mfg || !accessoriesDetails || !images) {
+                throw new BadRequestError(
+                    'Required!'
+                );
+            }
+
+            const newAcessories = await AccessoriesService.createAccessories(
+                name,
+                desc,
+                parseFloat(originalPrice),
+                parseInt(motorId),
+                mfg,
+                img,
+                imgHover,
+                accessoriesDetails,
+                images
+            );
+
+            new SuccessResponse(
+                {
+                    message: 'Motor created successfully!',
+                    metadata: newAcessories,
+                },
+                CREATED
+            ).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    updateMotor = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const { name, desc, originalPrice, salePrice, categoryId, mfg } =
+                req.body;
+
+            const motorId = parseInt(id);
+            const price = parseInt(originalPrice);
+            const priceS = parseInt(salePrice);
+            if (isNaN(motorId)) {
+                throw new BadRequestError('Motor ID must be a number!');
+            }
+
+            const updatedMotor = await AccessoriesService.updateMotor(
+                motorId,
+                name,
+                null,
+                desc,
+                price,
+                priceS,
+                categoryId,
+                mfg
+            );
+            if (!updatedMotor) {
+                throw new BadRequestError('Motor not found!');
+            }
+
+            new SuccessResponse({
+                message: 'Motor updated successfully!',
+                metadata: updatedMotor,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    deleteMotor = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const motorId = parseInt(id);
+            if (isNaN(motorId)) {
+                throw new BadRequestError('Motor ID must be a number!');
+            }
+
+            await AccessoriesService.deleteMotor(motorId);
+            new SuccessResponse({
+                message: 'Motor deleted successfully!',
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+}
+
+module.exports = new MotorController();

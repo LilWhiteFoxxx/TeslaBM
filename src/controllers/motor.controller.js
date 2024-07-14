@@ -1,13 +1,13 @@
 'use strict';
 
-const ProductService = require('../services/product.service');
+const MotorService = require('../services/motor.service');
 const { OK, CREATED, SuccessResponse } = require('../core/success.response');
 
-class ProductController {
+class MotorController {
     getAllMotorByCategory = async (req, res, next) => {
         try {
             const { categoryId, limit, offset } = req.query;
-            const motors = await ProductService.getAllMotorByCategory(
+            const motors = await MotorService.getAllMotorByCategory(
                 parseInt(categoryId),
                 parseInt(limit),
                 parseInt(offset)
@@ -24,7 +24,7 @@ class ProductController {
     getMotorDetail = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const motor = await ProductService.getMotorDetail(parseInt(id));
+            const motor = await MotorService.getMotorDetail(parseInt(id));
             new SuccessResponse({
                 message: 'Get motor detail success!',
                 metadata: motor,
@@ -37,7 +37,7 @@ class ProductController {
     getAllMotor = async (req, res, next) => {
         try {
             const { limit, offset } = req.query;
-            const motors = await ProductService.getAllMotor(
+            const motors = await MotorService.getAllMotor(
                 parseInt(limit),
                 parseInt(offset)
             );
@@ -50,51 +50,41 @@ class ProductController {
         }
     };
 
-    createMotor = async (req, res, next) => {
-        try {
-            const { name, desc, originalPrice, categoryId } = req.body;
-
-            if (!name || !desc || !originalPrice || !categoryId) {
-                throw new BadRequestError(
-                    'Name, desc, originalPrice, and categoryId are required!'
-                );
-            }
-
-            const newMotor = await ProductService.createMotor(
-                name,
-                desc,
-                parseInt(originalPrice),
-                parseInt(categoryId)
-            );
-            new SuccessResponse(
-                {
-                    message: 'Motor created successfully!',
-                    metadata: newMotor,
-                },
-                CREATED
-            ).send(res);
-        } catch (error) {
-            next(error);
-        }
-    };
-
     // Tạo một motor mới
     createMotor = async (req, res, next) => {
         try {
-            const { name, desc, originalPrice, categoryId } = req.body;
+            const {
+                name,
+                desc,
+                originalPrice,
+                categoryId,
+                mfg,
+                img,
+                imgHover,
+                motorDetails = [], // danh sách chi tiết motor để thêm
+                images = [], // danh sách hình ảnh để thêm
+            } = req.body;
 
-            if (!name || !desc || !originalPrice || !categoryId) {
+            // Kiểm tra các thông tin cần thiết
+            if (!name || !desc || !originalPrice || !categoryId || !mfg) {
                 throw new BadRequestError(
-                    'Name, desc, originalPrice, and categoryId are required!'
+                    'Name, desc, originalPrice, categoryId, and mfg are required!'
                 );
             }
 
-            const newMotor = await ProductService.createMotor(
+            // Gọi phương thức tạo motor từ ProductService
+            const newMotor = await MotorService.createMotor(
                 name,
                 desc,
                 parseFloat(originalPrice),
-                parseInt(categoryId)
+                parseInt(categoryId),
+                mfg,
+                img,
+                imgHover,
+                motorDetails,
+                images
             );
+
             new SuccessResponse(
                 {
                     message: 'Motor created successfully!',
@@ -111,21 +101,25 @@ class ProductController {
     updateMotor = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const { name, desc, originalPrice, categoryId } = req.body;
+            const { name, desc, originalPrice, salePrice, categoryId, mfg } =
+                req.body;
 
             const motorId = parseInt(id);
-            const price = parseInt(originalPrice)
+            const price = parseInt(originalPrice);
+            const priceS = parseInt(salePrice);
             if (isNaN(motorId)) {
                 throw new BadRequestError('Motor ID must be a number!');
             }
 
-            const updatedMotor = await ProductService.updateMotor(
+            const updatedMotor = await MotorService.updateMotor(
                 motorId,
                 name,
                 null,
                 desc,
                 price,
-                categoryId
+                priceS,
+                categoryId,
+                mfg
             );
             if (!updatedMotor) {
                 throw new BadRequestError('Motor not found!');
@@ -150,7 +144,7 @@ class ProductController {
                 throw new BadRequestError('Motor ID must be a number!');
             }
 
-            await ProductService.deleteMotor(motorId);
+            await MotorService.deleteMotor(motorId);
             new SuccessResponse({
                 message: 'Motor deleted successfully!',
             }).send(res);
@@ -160,4 +154,4 @@ class ProductController {
     };
 }
 
-module.exports = new ProductController();
+module.exports = new MotorController();

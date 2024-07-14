@@ -16,6 +16,23 @@ class CategoryService {
 
         return categories;
     };
+
+    static getAllCategoryOfAccessories = async (limit = 50, offset = 0) => {
+        const motors = await prisma.motor.findMany({
+            take: limit,
+            skip: offset,
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+
+        if (!motors || motors.length === 0) {
+            throw new BadRequestError('No motors found!');
+        }
+
+        return motors;
+    };
     // Create a new category
     static createCategory = async (name) => {
         if (!name) {

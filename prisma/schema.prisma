@@ -145,13 +145,17 @@ model category {
 model motor {
   id            Int           @id @default(autoincrement())
   name          String        @db.VarChar(100)
-  slug          String        @unique
+  slug          String        @db.VarChar(255)
   desc          String        @db.VarChar(255)
   originalPrice Int
+  mfg           String        @db.VarChar(4)
   categoryId    Int
+  img           String?       @db.VarChar(255)
+  imgHover      String?       @db.VarChar(255)
   category      category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   motorDetail   motorDetail[]
   accessories   accessories[]
+  images        images[]
 }
 
 //  abc
@@ -160,50 +164,56 @@ model motorDetail {
   originalPrice Int
   salePrice     Int
   motorId       Int
-  colorId       Int
+  colorId       Int?
   cartItem      cartItem[]
   orderLine     orderLine[]
-  images        images[]
   motor         motor?        @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   inventories   inventories[]
 }
 
 model images {
-  id                  Int                @id @default(autoincrement())
-  path                String             @db.VarChar(255)
-  motorDetailId       Int?
-  accessoriesDetailId Int?
-  motorDetail         motorDetail?       @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  accessoriesDetail   accessoriesDetail? @relation(fields: [accessoriesDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id            Int          @id @default(autoincrement())
+  path          String       @db.VarChar(255)
+  motorId       Int?
+  accessoriesId Int?
+  motor         motor?       @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accessories   accessories? @relation(fields: [accessoriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model color {
   id                Int                 @id @default(autoincrement())
   name              String              @db.VarChar(20)
+  img               String?             @db.VarChar(255)
   motorDetail       motorDetail[]
   accessoriesDetail accessoriesDetail[]
 }
 
 model accessories {
-  id            Int         @id @default(autoincrement())
-  name          String      @db.VarChar(100)
-  slug          String      @db.VarChar(255)
-  desc          String      @db.VarChar(255)
-  originalPrice Int
-  motorId       Int
-  cartItem      cartItem[]
-  orderLine     orderLine[]
-  motor         motor?      @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(100)
+  slug              String              @db.VarChar(255)
+  desc              String              @db.VarChar(255)
+  originalPrice     Int
+  mfg               String?             @db.VarChar(4)
+  img               String?             @db.VarChar(255)
+  imgHover          String?             @db.VarChar(255)
+  motorId           Int
+  cartItem          cartItem[]
+  orderLine         orderLine[]
+  motor             motor?              @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  images            images[]
+  accessoriesDetail accessoriesDetail[]
 }
 
 model accessoriesDetail {
   id            Int           @id @default(autoincrement())
   originalPrice Int
   salePrice     Int
+  accessoriesId Int
   colorId       Int?
   color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  images        images[]
+  accessories   accessories?  @relation(fields: [accessoriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   inventories   inventories[]
 }
 
@@ -223,7 +233,7 @@ model inventories {
   accessoriesDetailId Int?
   stock               Int
   createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
+  updatedAt           DateTime?          @updatedAt
   motorDetail         motorDetail?       @relation(fields: [motorDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accessoriesDetail   accessoriesDetail? @relation(fields: [accessoriesDetailId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
