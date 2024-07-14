@@ -3,7 +3,7 @@ import { Carousel } from 'react-responsive-carousel';
 
 import ForwardArrow from './ForwardArrow';
 import BackwardArrow from './BackwardArrow';
-import { getAllProduct } from '../../apis/product';
+import { getAllMotor } from '../../apis/motor';
 
 import './Styles/Slides.scss';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
@@ -42,7 +42,7 @@ export const Tesfayedev = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const res = await getAllProduct(50);
+            const res = await getAllMotor(50);
             setSlidesData(res.metadata);
         };
 

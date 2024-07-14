@@ -2,6 +2,7 @@
 import React, { createRef, useRef, useState, useEffect } from 'react';
 import { useNavigate,useParams, useLocation  } from 'react-router-dom';
 
+import { getAllCategory, getAllCategoryOfAccessories } from '../../apis/category';
 import TeslaLogo from '../../Assets/images/TeslaLogo';
 import DropDown from './DropDown';
 import { Indicator, StyledNav } from './NavStyledComponents';
@@ -9,7 +10,6 @@ import { navList } from './navData';
 import SearchBar from './SearchBar';
 import CartBtn from './CartBtn';
 import NavSideMenu from './navSideMenu/NavSideMenu';
-import { getAllCategory } from '../../apis/category';
 // import { useSelector } from 'react-redux';
 
 
@@ -38,6 +38,7 @@ export default function Nav() {
     const [solidNav, setSolidNav] = useState(false);
 
     const [subCate, setSubCate] = useState([]);
+    const [subCateAccessories, setSubCateAccessories] = useState([]);
 
     const handleEnter = (ref, item) => {
         //this will take the ref info break it into a more manageable object
@@ -134,13 +135,25 @@ export default function Nav() {
     }, [location.pathname, params]);
 
     useEffect(() => {
-        (async () => {
-            const res = await getAllCategory();
-            console.log(res.metadata);
-            setSubCate(res.metadata);
-            console.log(subCate);
-        })();
-    },[]);
+        const fetchData = async () => {
+            try {
+                const [categoriesRes, accessoriesRes] = await Promise.all([
+                    getAllCategory(),
+                    getAllCategoryOfAccessories()
+                ]);
+    
+                console.log(categoriesRes.metadata);
+                setSubCate(categoriesRes.metadata);
+    
+                console.log(accessoriesRes.metadata);
+                setSubCateAccessories(accessoriesRes.metadata);
+            } catch (error) {
+                console.error("Failed to fetch data", error);
+            }
+        };
+    
+        fetchData();
+    }, []);
 
     const categoryList = [
         {
@@ -150,7 +163,7 @@ export default function Nav() {
         },
         {
             category: 'Accessories',
-            subCategories: subCate,
+            subCategories: subCateAccessories,
             promo: { title: "Accessories", image: 'https://rparts-sites.s3.amazonaws.com/23908d49235005b9c1c9e417b84fee8e/design/main-slider/f900gs.webp' },
         },
     ];

@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getAllProduct } from '../../apis/product';
+import { getAllMotor } from '../../apis/motor';
 import CardsGrid from '../../components/CardsGrid';
 
 import './ProductPage.scss';
+import { getAllAccessories } from '../../apis/accessories';
 
 const ProductPage = () => {
     const params = useParams();
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    // const [products2, setProducts2] = useState([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const res = await getAllProduct();
-            setProducts(res.metadata);
+            try {
+                const [motorsRes, accessoriesRes] = await Promise.all([
+                    getAllMotor(),
+                    getAllAccessories(),
+                ]);
+
+                const allProducts = [
+                    ...motorsRes.metadata,
+                    ...accessoriesRes.metadata,
+                ];
+                setProducts(allProducts);
+            } catch (error) {
+                console.error('Failed to fetch data', error);
+            }
         };
 
         fetchProducts();
@@ -49,17 +63,26 @@ const ProductPage = () => {
     };
 
     const items = transformData(products);
+
     let filteredItems;
     if (params.subCategory) {
+        const formattedSubCategory = params.subCategory.replace(/-/g, ' ');
         filteredItems = items.flatMap((category) =>
             category.subCategories.filter(
-                (sub) => sub.subCategory.toLowerCase() === params.subCategory
+                (sub) =>
+                    sub.subCategory.toLowerCase() ===
+                    formattedSubCategory.toLowerCase()
             )
         );
     } else if (params.productCategory) {
+        const formattedProductCategory = params.productCategory.replace(
+            /-/g,
+            ' '
+        );
         filteredItems = items.filter(
             (category) =>
-                category.category.toLowerCase() === params.productCategory
+                category.category.toLowerCase() ===
+                formattedProductCategory.toLowerCase()
         );
     } else {
         filteredItems = items;
