@@ -1,17 +1,16 @@
 // import styled from "styled-components";
-import TeslaLogo from '../../Assets/images/TeslaLogo';
 import React, { createRef, useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams, useLocation  } from 'react-router-dom';
+
+import TeslaLogo from '../../Assets/images/TeslaLogo';
 import DropDown from './DropDown';
 import { Indicator, StyledNav } from './NavStyledComponents';
 import { navList } from './navData';
 import SearchBar from './SearchBar';
 import CartBtn from './CartBtn';
-import { useParams, useLocation } from 'react-router-dom';
 import NavSideMenu from './navSideMenu/NavSideMenu';
-import { useSelector } from 'react-redux';
 import { getAllCategory } from '../../apis/category';
-import wallConnector from "../../Assets/images/feature_wall_connector.avif";
+// import { useSelector } from 'react-redux';
 
 
 export default function Nav() {
@@ -19,7 +18,7 @@ export default function Nav() {
     const location = useLocation();
     const params = useParams();
 
-    const { user } = useSelector((state) => state.auth);
+    // const { user } = useSelector((state) => state.auth);
 
     //Refs for link locations and sizes
     const navRefs = useRef(navList.map(() => createRef()));
@@ -141,7 +140,7 @@ export default function Nav() {
             setSubCate(res.metadata);
             console.log(subCate);
         })();
-    }, []);
+    },[]);
 
     const categoryList = [
         {

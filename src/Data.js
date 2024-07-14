@@ -182,7 +182,7 @@ import S3XYMug from "./Assets/images/S3XYMug.avif";
 import travelTumblerBlack from "./Assets/images/travelTumblerBlack.avif";
 import travelTumblerSilver from "./Assets/images/travelTumblerSilver.avif";
 import SSWaterBottleBlack from "./Assets/images/SSWaterBottleBlack.avif";
-import SSWaterBottleSilver from "./Assets/images/SSWaterBottleSilver.avif";
+
 
 import giftCard from "./Assets/images/GIftCard.webm";
 import umbrella from "./Assets/images/umbrella.avif";

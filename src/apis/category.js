@@ -6,7 +6,7 @@ export const getAllCategory = async (limit = 50, offset = 0) => {
 
         return response;
     } catch (error) {
-        console.error('upload userinfo error:', error.response?.data || error.message);
+        console.error('get All category error:', error.response?.data || error.message);
         throw error; 
     }
 }

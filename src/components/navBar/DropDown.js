@@ -60,7 +60,7 @@ export default function DropDown({ dropDown, handleLeave }) {
             </div>
             {dropDown.promo && (
                 <div className="nav-drop-section-promo">
-                    <img className='object-cover h-64 w-96' src={dropDown.promo.image} alt="" />
+                    <img className='object-cover h-64 w-100' src={dropDown.promo.image} alt="" />
                     <h2>{dropDown.promo.title}</h2>
                 </div>
             )}
