@@ -19,6 +19,7 @@ const ProductDetail = () => {
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [isFocused, setIsFocused] = useState(false);
+    const [quantity, setQuantity] = useState(1);
 
     const handlePrev = () => {
         setActiveIndex((prevIndex) =>
@@ -31,6 +32,13 @@ const ProductDetail = () => {
             prevIndex < images.length - 1 ? prevIndex + 1 : 0
         );
     };
+
+    const handleQuantityChange = (amount) => {
+        setQuantity((prevQuantity) =>
+            Math.max(1, prevQuantity + amount)
+        );
+    };
+
     return (
         <>
             <div className="product-detail-component flex bg-[#111] px-5">
@@ -101,7 +109,27 @@ const ProductDetail = () => {
                                     </a>
                                 </p>
                             )}
-                            {/* <a href="/groupproject/signin">SIGN IN</a> */}
+                            <div className="quantity-input flex items-center mb-4">
+                                <button
+                                    onClick={() => handleQuantityChange(-1)}
+                                    className={`quantity-btn text-white p-2 ${quantity === 1 ? 'opacity-50 cursor-not-allowed' : ''} `}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="number"
+                                    className="quantity-field mx-2 border-1 border-[#393c41] w-[80px] h-[50px] text-white text-center justify-center items-center bg-transparent"
+                                    value={quantity}
+                                    readOnly
+                                    onChange={(e) => setQuantity(e.target.value)}
+                                /> 
+                                <button
+                                    onClick={() => handleQuantityChange(1)}
+                                    className="quantity-btn text-white p-2"
+                                >
+                                    +
+                                </button>
+                            </div>
                             <ButtonAuth
                                 title={'ADD TO CART'}
                                 className={'btn-sign-up'}
