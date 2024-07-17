@@ -1,8 +1,11 @@
 // import styled from "styled-components";
 import React, { createRef, useRef, useState, useEffect } from 'react';
-import { useNavigate,useParams, useLocation  } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
-import { getAllCategory, getAllCategoryOfAccessories } from '../../apis/category';
+import {
+    getAllCategory,
+    getAllCategoryOfAccessories,
+} from '../../apis/category';
 import TeslaLogo from '../../Assets/images/TeslaLogo';
 import DropDown from './DropDown';
 import { Indicator, StyledNav } from './NavStyledComponents';
@@ -11,7 +14,6 @@ import SearchBar from './SearchBar';
 import CartBtn from './CartBtn';
 import NavSideMenu from './navSideMenu/NavSideMenu';
 // import { useSelector } from 'react-redux';
-
 
 export default function Nav() {
     const navigate = useNavigate();
@@ -112,17 +114,34 @@ export default function Nav() {
     //detect scroll position on main shop page
     useEffect(() => {
         setSolidNav(false);
-        if (
-            location.pathname === '/groupproject/cart' ||
-            location.pathname === '/groupproject/checkout' ||
-            location.pathname === '/groupproject/checkout/confirm'
-        ) {
+    
+        const fixedPaths = [
+            '/groupproject/cart',
+            '/groupproject/checkout',
+            '/groupproject/checkout/confirm',
+        ];
+    
+        const isFixedPath = fixedPaths.includes(location.pathname);
+        const isSlugPath = /^\/groupproject\/product\/[^/]+$/.test(location.pathname);
+    
+        if (isFixedPath) {
             setSolidNav(true);
+        } else if (isSlugPath) {
+            window.onscroll = () => {
+                if (window.pageYOffset > 200) {
+                    setSolidNav(true);
+                } else {
+                    setSolidNav(false);
+                }
+            };
+            return () => {
+                window.onscroll = null;
+            };
         } else if (Object.entries(params).length <= 0) {
             window.onscroll = () => {
                 if (window.pageYOffset > 200) {
                     setSolidNav(true);
-                } else if (window.pageYOffset < 200) {
+                } else {
                     setSolidNav(false);
                 }
             };
@@ -133,25 +152,26 @@ export default function Nav() {
             setSolidNav(true);
         }
     }, [location.pathname, params]);
+    
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [categoriesRes, accessoriesRes] = await Promise.all([
                     getAllCategory(),
-                    getAllCategoryOfAccessories()
+                    getAllCategoryOfAccessories(),
                 ]);
-    
+
                 console.log(categoriesRes.metadata);
                 setSubCate(categoriesRes.metadata);
-    
+
                 console.log(accessoriesRes.metadata);
                 setSubCateAccessories(accessoriesRes.metadata);
             } catch (error) {
-                console.error("Failed to fetch data", error);
+                console.error('Failed to fetch data', error);
             }
         };
-    
+
         fetchData();
     }, []);
 
@@ -159,12 +179,18 @@ export default function Nav() {
         {
             category: 'Motors',
             subCategories: subCate,
-            promo: { title: "Motor", image:'https://i0.wp.com/www.asphaltandrubber.com/wp-content/uploads/2017/04/BMW-HP4-Race-18-scaled.jpg?fit=2560%2C1707&ssl=1' },
+            promo: {
+                title: 'Motor',
+                image: 'https://i0.wp.com/www.asphaltandrubber.com/wp-content/uploads/2017/04/BMW-HP4-Race-18-scaled.jpg?fit=2560%2C1707&ssl=1',
+            },
         },
         {
             category: 'Accessories',
             subCategories: subCateAccessories,
-            promo: { title: "Accessories", image: 'https://rparts-sites.s3.amazonaws.com/23908d49235005b9c1c9e417b84fee8e/design/main-slider/f900gs.webp' },
+            promo: {
+                title: 'Accessories',
+                image: 'https://rparts-sites.s3.amazonaws.com/23908d49235005b9c1c9e417b84fee8e/design/main-slider/f900gs.webp',
+            },
         },
     ];
     //create a list of the nav links needed from the navData list

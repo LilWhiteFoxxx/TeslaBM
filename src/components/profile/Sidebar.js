@@ -28,7 +28,7 @@ function Sidebar() {
         <div className="sidebar-container">
             <div className="profile flex flex-col justify-center items-center bg-white w-full py-4">
                 <img
-                    src="https://digitalassets-shop.tesla.com/image/upload/f_auto,q_auto/v1/content/dam/tesla/CAR_ACCESSORIES/MODEL_X/INTERIOR/1562263-00-A_0_2000.jpg"
+                    src={user?.avatar}
                     alt="Profile"
                 />
                 <h2 className="my-2 font-bold">{user?.username}</h2>

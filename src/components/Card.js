@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-
+import { useNavigate } from 'react-router-dom';
 import { addItem } from '../app/features/cartSlice';
-
 import './Card.scss';
 
 const Card = (props) => {
@@ -16,6 +15,11 @@ const Card = (props) => {
     const [selectedColor, setSelectedColor] = useState({});
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleProductClick = () => {
+        navigate(`/groupproject/product/${product.slug}`, { state: { product } });
+    };
 
     return (
         <div className="cardWrapper">
@@ -98,8 +102,13 @@ const Card = (props) => {
             </div>
             <div className="item">
                 <div>
-                    <p className='text-[12px]'>{product.mfg}</p>
-                    <p className="itemName">{itemName}</p>
+                    <p className="text-[12px]">{product.mfg}</p>
+                    <p
+                        className="itemName"
+                        onClick={handleProductClick}
+                    >
+                        {itemName}
+                    </p>
                     <p className="itemPrice">
                         {typeof itemPrice === 'object'
                             ? `${itemPrice[0].toLocaleString(

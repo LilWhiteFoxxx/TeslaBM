@@ -14,11 +14,11 @@ import InputForm from './InputForm';
 import './personalInfoForm.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const PersonalInfoForm = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
     const [formValues, setFormValues] = useState({
+        username: user?.username,
         firstName: user?.firstName,
         lastName: user?.lastName,
         email: user?.email,
@@ -30,6 +30,7 @@ const PersonalInfoForm = () => {
     const [errors, setErrors] = useState({});
 
     const validationSchema = Yup.object({
+        username: Yup.string().required('Required'),
         firstName: Yup.string().required('Required'),
         lastName: Yup.string().required('Required'),
         email: Yup.string().email('Invalid email address').required('Required'),
@@ -61,18 +62,23 @@ const PersonalInfoForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Submitting form', formValues);
         const validationErrors = await validate(formValues);
         setErrors(validationErrors);
         if (Object.keys(validationErrors).length === 0) {
-            console.log(formValues);
-            const res = await uploadUserInfo(formValues)
-            if (res.metadata) {
-                console.log(res);
-                dispatch(updateInfo(formValues));
-                toast.success('Update success!');
-            } else {
-                toast.error(res.message);
-                console.log(res.message);
+            try {
+                const res = await uploadUserInfo(formValues);
+                console.log('API Response', res);
+                if (res.metadata) {
+                    dispatch(updateInfo(formValues));
+                    toast.success('Update success!');
+                } else {
+                    toast.error(res.message);
+                    console.log(res.message);
+                }
+            } catch (error) {
+                toast.error('Error submitting form');
+                console.log('Error submitting form', error);
             }
         }
     };
@@ -95,6 +101,19 @@ const PersonalInfoForm = () => {
                 <h1>Personal Information</h1>
             </div>
             <form onSubmit={handleSubmit}>
+                <InputForm
+                    className="input-form"
+                    title={'UserName'}
+                    id="username"
+                    name="username"
+                    type={'text'}
+                    onChange={handleChange}
+                    value={formValues.username}
+                    placeholder="Enter username"
+                />
+                {errors.email ? (
+                    <div className="error">{errors.email}</div>
+                ) : null}
                 <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col">
                         <InputForm
@@ -148,8 +167,8 @@ const PersonalInfoForm = () => {
                         <InputForm
                             className="input-form"
                             title={'Phone Number'}
-                            id="phone"
-                            name="phone"
+                            id="phoneNumber"
+                            name="phoneNumber"
                             type={'text'}
                             onChange={handleChange}
                             value={formValues.phoneNumber}

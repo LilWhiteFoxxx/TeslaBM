@@ -4,14 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   cartSelectors,
   cartQuantity,
-  //   getTotal,
   cartTotal,
   resetCart,
 } from "../../app/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const ConfirmationPage = styled.div`
-  min-height: calc(100vh - 91.2px);
+  min-height: calc(97vh);
   padding-top: 100px;
   max-width: 326px;
   margin: auto;

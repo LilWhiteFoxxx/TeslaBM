@@ -7,3 +7,33 @@
         clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0% 100%);
     }
 }
+
+.product-detail-component{
+    min-height: 100vh;
+}
+
+.color-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:focus,
+    &:hover {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    }
+
+    .selected-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

@@ -1,17 +1,18 @@
 .profile-page-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     // margin-top: 100px;
     // padding-top: 30px;
     // padding-bottom: 30px;
     // padding-inline-start: 40px;
     // padding-inline-end: 40px;
-    padding: 100px;
+    padding: 0 100px 0 100px;
 
 
     .sidebar-container {
         width: 250px;
         background-color: #f4f4f4;
+        height: 100%;
     }
 
     .personal-info-form {

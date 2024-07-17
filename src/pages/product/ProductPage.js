@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { getAllMotor } from '../../apis/motor';
 import CardsGrid from '../../components/CardsGrid';
@@ -9,7 +9,6 @@ import { getAllAccessories } from '../../apis/accessories';
 
 const ProductPage = () => {
     const params = useParams();
-    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     // const [products2, setProducts2] = useState([]);
 
@@ -90,9 +89,6 @@ const ProductPage = () => {
 
     return (
         <div style={{ paddingTop: '100px' }} className="productsPage">
-            <button onClick={() => navigate('/groupproject/productdetail')}>
-                Click me
-            </button>
             {filteredItems.length > 0 ? (
                 params.subCategory ? (
                     filteredItems.map((sub, index) => (

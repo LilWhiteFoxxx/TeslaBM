@@ -26,9 +26,13 @@ export const signUp = async (payload) => {
     try {
         console.log(payload);
         const body = {
-            email: payload
+            email: payload.email,
+            username: payload.username,
+            password: payload.password,
+            firstName: payload.firstName,
+            lastName: payload.lastName
         };
-        const response = await axios.post('/forgotpassword', body);
+        const response = await axios.post('/register', body);
 
         return response;
     } catch (error) {

@@ -19,7 +19,7 @@ export const OrderSummary = () => {
         <span>Calculated at checkout</span>
       </p>
       <h2>
-        Subtotal <span>${cartTtl.toLocaleString("en-US")}</span>
+        Subtotal <span>{cartTtl.toLocaleString("en-US")} VND</span>
       </h2>
       <button className='checkoutButton' onClick={() => navigate("/groupproject/checkout")}>
         CHECKOUT

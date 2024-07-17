@@ -41,7 +41,7 @@ export const CartItem = ({ cartId, cartEntities }) => {
           </span>
         </div>
       </div>
-      <h3 className='cartItemPrice'>${cartEntities[cartId].itemPrice}</h3>
+      <h3 className='cartItemPrice'>{cartEntities[cartId].itemPrice.toLocaleString("en-US")} VND</h3>
     </StyledCartItem>
   );
 };

@@ -56,6 +56,11 @@ export default function MyRouter() {
                     <Route exact path="/groupproject/cart" element={<Cart />} />
                     <Route
                         exact
+                        path="/groupproject/product/:slug"
+                        element={<ProductDetail />}
+                    />
+                    <Route
+                        exact
                         path="/groupproject/productdetail"
                         element={<ProductDetail />}
                     />

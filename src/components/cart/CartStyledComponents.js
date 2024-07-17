@@ -6,7 +6,7 @@ export const CartPage = styled.div`
     padding: 0;
     line-height: auto;
   }
-  min-height: calc(100vh - 91.2px);
+  min-height: calc(97vh);
   max-width: 100vw;
   padding: 0px 20px;
   padding-top: 88px;

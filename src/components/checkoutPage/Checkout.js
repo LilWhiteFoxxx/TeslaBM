@@ -12,7 +12,7 @@ const StyledCheckoutPage = styled.div`
   padding-top: 160px;
   max-width: 362px;
   margin: auto;
-  min-height: calc(100vh - 91.2px);
+  min-height: calc(97vh);
   text-align: left;
   h1 {
     font-size: 28px;

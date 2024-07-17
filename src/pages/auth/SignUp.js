@@ -75,7 +75,7 @@ function SignUp() {
                 email: form.email,
                 password: form.password,
                 firstName: form.firstName,
-                lastName: form.lastName
+                lastName: form.lastName,
             };
             const res = await signUp(payload);
 
@@ -84,7 +84,7 @@ function SignUp() {
                 toast.success('Register success!');
                 navigate('/groupproject/verify');
             } else {
-                toast.error(res.message);
+                toast.error('Error!');
                 console.log(res.message);
             }
         }
