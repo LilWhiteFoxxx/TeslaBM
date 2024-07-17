@@ -10,5 +10,6 @@ router.use('/api/v1/motors', require('./motor'))
 router.use('/api/v1', require('./firebase'))
 router.use('/api/v1', require('./access'))
 router.use('/api/v1/user', require('./user'))
+router.use('/api/v1/cart', require('./cart'))
 
 module.exports = router

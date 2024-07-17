@@ -29,19 +29,82 @@ class MotorService {
             throw new BadRequestError('No motors found!');
         }
 
-        const mappedMotors = motors.map((motor) => ({
-            id: motor.id,
-            itemImg: motor.img,
-            itemImgHover: motor.imgHover,
-            itemName: motor.name,
-            itemPrice: motor.originalPrice,
-            slug: motor.slug,
-            subCategory: motor.category.name, // Adjust this field if necessary
-            category: 'motors',
-            stockStatus: true, // Placeholder value, replace with actual data if available
-            options: ['quick-add+', 'view-details'], // Placeholder options, replace with actual data if available
-            mfg: motor.mfg,
-        }));
+        const results = await Promise.all(
+            motors.map(async (motor) => {
+                // Fetch motorDetails for the current motor including color
+                const motorDetails = await prisma.motorDetail.findMany({
+                    where: { motorId: motor.id },
+                    include: {
+                        color: {
+                            select: {
+                                name: true,
+                                img: true,
+                            },
+                        },
+                    },
+                });
+
+                // Fetch inventories based on motorDetails ids
+                const inventories = await Promise.all(
+                    motorDetails.map(async (motorDetail) => {
+                        return await prisma.inventories.findMany({
+                            where: { motorDetailId: motorDetail.id },
+                            select: {
+                                id: true,
+                                motorDetailId: true,
+                                stock: true,
+                            },
+                        });
+                    })
+                );
+
+                return { motor, motorDetails, inventories };
+            })
+        );
+
+        const mappedMotors = results.map(
+            ({ motor, motorDetails, inventories }) => {
+                const flattenedInventories = inventories.flat();
+                const stockStatus = flattenedInventories.some(
+                    (inventory) => inventory.stock > 0
+                );
+
+                return {
+                    id: motor.id,
+                    itemImg: motor.img,
+                    itemImgHover: motor.imgHover,
+                    itemName: motor.name,
+                    itemPrice: motor.originalPrice,
+                    slug: motor.slug,
+                    desc: motor.desc,
+                    subCategory: motor.category.name, // Adjust this field if necessary
+                    category: 'motors',
+                    stockStatus, // Set stockStatus based on inventories
+                    options: ['view-details'], // Placeholder options, replace with actual data if available
+                    mfg: motor.mfg,
+                    productDetails: motorDetails.map((md) => {
+                        const res = flattenedInventories.filter(
+                            (inv) => inv.motorDetailId === md.id
+                        );
+                        return {
+                            id: md.id,
+                            motorId: md.motorId,
+                            colorId: md.colorId,
+                            color: md.color.name,
+                            colorImage: md.color.img,
+                            originalPrice: md.originalPrice,
+                            salePrice: md.salePrice,
+                            // inventories: flattenedInventories.filter(
+                            //     (inv) => inv.motorDetailId === md.id
+                            // ),
+                            inventoriesId: res[0].id,
+                            stock: res[0].stock,
+                        };
+                    }),
+                    // inventories: flattenedInventories, // Include and flatten inventories in the returned object
+                };
+            }
+        );
 
         return mappedMotors;
     };
@@ -111,7 +174,7 @@ class MotorService {
                 colorId: true,
                 inventories: {
                     select: {
-                        stock: true,  // Lấy thông tin số lượng từ bảng inventories
+                        stock: true, // Lấy thông tin số lượng từ bảng inventories
                     },
                 },
             },
@@ -258,6 +321,119 @@ class MotorService {
         return motorWithDetails;
     };
 
+    static createMotor = async (
+        name,
+        desc,
+        originalPrice,
+        categoryId,
+        mfg,
+        img,
+        imgHover,
+        motorDetails = [],
+        images = []
+    ) => {
+        if (
+            !name ||
+            !desc ||
+            !originalPrice ||
+            !categoryId ||
+            !mfg ||
+            !motorDetails ||
+            !images
+        ) {
+            throw new BadRequestError('Required!');
+        }
+    
+        try {
+            const slug = slugify(name + ' ' + mfg, { lower: true, strict: true });
+    
+            // Create the motor
+            const newMotor = await prisma.motor.create({
+                data: {
+                    name,
+                    slug,
+                    desc,
+                    originalPrice,
+                    img,
+                    imgHover,
+                    categoryId,
+                    mfg,
+                },
+            });
+    
+            // Create motor details if provided
+            for (const detail of motorDetails) {
+                const motorD = await prisma.motorDetail.create({
+                    data: {
+                        motorId: newMotor.id,
+                        originalPrice: detail.originalPrice,
+                        salePrice: detail.salePrice,
+                        colorId: detail.colorId,
+                    },
+                });
+    
+                await prisma.inventories.create({
+                    data: {
+                        motorDetailId: motorD.id,
+                        stock: detail.quantity,
+                    },
+                });
+            }
+    
+            // Create images if provided
+            for (const image of images) {
+                await prisma.images.create({
+                    data: {
+                        motorId: newMotor.id,
+                        ...image,
+                    },
+                });
+            }
+    
+            const motorWithDetails = await prisma.motor.findUnique({
+                where: { id: newMotor.id },
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    desc: true,
+                    originalPrice: true,
+                    categoryId: true,
+                    mfg: true,
+                    img: true,
+                    imgHover: true,
+                    motorDetail: {
+                        select: {
+                            id: true,
+                            originalPrice: true,
+                            salePrice: true,
+                            colorId: true,
+                            inventories: {
+                                select: {
+                                    id: true,
+                                    stock: true,
+                                },
+                            },
+                        },
+                    },
+                    images: {
+                        select: {
+                            id: true,
+                            path: true,
+                        },
+                    },
+                },
+            });
+    
+            return motorWithDetails;
+        } catch (error) {
+            // Handle error appropriately
+            console.error('Error creating motor:', error);
+            throw new Error('Failed to create motor');
+        }
+    };
+    
+
     static updateMotor = async (
         id,
         name,
@@ -320,7 +496,7 @@ class MotorService {
         const motor = await prisma.motor.findUnique({
             where: { id },
             include: {
-                motorDetails: true, // Bao gồm chi tiết motor để xóa các chi tiết motor liên quan
+                motorDetail: true, // Bao gồm chi tiết motor để xóa các chi tiết motor liên quan
                 images: true, // Bao gồm hình ảnh để xóa các hình ảnh liên quan
             },
         });

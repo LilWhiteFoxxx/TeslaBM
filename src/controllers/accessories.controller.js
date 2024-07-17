@@ -21,13 +21,13 @@ class MotorController {
         }
     };
 
-    getMotorDetail = async (req, res, next) => {
+    getAccessoriesDetail = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const motor = await AccessoriesService.getMotorDetail(parseInt(id));
+            const accessories = await AccessoriesService.getAccessoriesDetail(parseInt(id));
             new SuccessResponse({
-                message: 'Get motor detail success!',
-                metadata: motor,
+                message: 'Get accessories detail success!',
+                metadata: accessories,
             }).send(res);
         } catch (error) {
             next(error);

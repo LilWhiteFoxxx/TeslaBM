@@ -77,6 +77,7 @@ class AccessService {
                 password: passwordHash,
                 firstName,
                 lastName,
+                avatar: 'https://i.pinimg.com/originals/6a/2c/fd/6a2cfda10fb8e3167ebaf6d63279864c.png',
             },
         });
 
@@ -126,6 +127,12 @@ class AccessService {
             where: { id: user.id },
             data: { isVerify: true },
         });
+
+        await prisma.cart.create({
+            data: {
+                userId: user.id
+            }
+        })
 
         return { message: 'Email verified successfully' };
     };

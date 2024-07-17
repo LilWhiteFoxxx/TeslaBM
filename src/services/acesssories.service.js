@@ -29,70 +29,92 @@ class AccessoriesService {
             throw new BadRequestError('No accessories found!');
         }
 
-        const mappedAccessories = accessories.map((accessory) => ({
-            id: accessory.id,
-            itemImg: accessory.img,
-            itemImgHover: accessory.imgHover,
-            itemName: accessory.name,
-            itemPrice: accessory.originalPrice,
-            slug: accessory.slug,
-            subCategory: accessory.motor.name, // Adjust this field if necessary
-            category: 'accessories',
-            stockStatus: true, // Placeholder value, replace with actual data if available
-            options: ['quick-add+'], // Placeholder options, replace with actual data if available
-            mfg: accessory.mfg,
-        }));
+        const results = await Promise.all(
+            accessories.map(async (accessory) => {
+                const accessoriesDetails =
+                    await prisma.accessoriesDetail.findMany({
+                        where: { accessoriesId: accessory.id },
+                        include: {
+                            color: {
+                                select: {
+                                    name: true,
+                                    img: true
+                                },
+                            },
+                        },
+                    });
+
+                const inventories = await Promise.all(
+                    accessoriesDetails.map(async (accessoriesDetail) => {
+                        return await prisma.inventories.findMany({
+                            where: {
+                                accessoriesDetailId: accessoriesDetail.id,
+                            },
+                            select: {
+                                id: true,
+                                accessoriesDetailId: true,
+                                stock: true,
+                            },
+                        });
+                    })
+                );
+
+                return { accessory, accessoriesDetails, inventories };
+            })
+        );
+
+        const mappedAccessories = results.map(
+            ({ accessory, accessoriesDetails, inventories }) => {
+                const flattenedInventories = inventories.flat();
+                const stockStatus = flattenedInventories.some(
+                    (inventory) => inventory.stock > 0
+                );
+
+                return {
+                    id: accessory.id,
+                    itemImg: accessory.img,
+                    itemImgHover: accessory.imgHover,
+                    itemName: accessory.name,
+                    itemPrice: accessory.originalPrice,
+                    slug: accessory.slug,
+                    subCategory: accessory.motor.name,
+                    category: 'accessories',
+                    stockStatus, // Kiểm tra trạng thái tồn kho
+                    options: ['quick-add+'], // Tùy chọn, có thể mở rộng thêm
+                    mfg: accessory.mfg,
+                    productDetails: accessoriesDetails.map((ad) => {
+                        const res = flattenedInventories.filter(
+                            (inv) => inv.accessoriesDetailId === ad.id
+                        );
+
+                        return {
+                            id: ad.id,
+                            colorId: ad?.colorId,
+                            color: ad.color?.name,
+                            colorImage: ad.color?.img,
+                            originalPrice: ad.originalPrice,
+                            salePrice: ad.salePrice,
+                            inventoriesId: res[0].id,
+                            stock: res[0].stock,
+                        };
+                    }),
+                };
+            }
+        );
 
         return mappedAccessories;
     };
 
-    static getAllMotor2 = async (limit = 50, offset = 0) => {
-        const motors = await prisma.motor.findMany({
-            take: limit,
-            skip: offset,
-        });
-
-        if (!motors || motors.length === 0) {
-            throw new BadRequestError('No motors found!');
+    static getAccessoriesDetail = async (accessoriesId) => {
+        if (!accessoriesId) {
+            throw new BadRequestError('Accessories ID is required!');
         }
 
-        return motors;
-    };
-
-    static getAllMotorByCategory = async (
-        categoryId,
-        limit = 50,
-        offset = 0
-    ) => {
-        if (!categoryId) {
-            throw new BadRequestError('Category ID is required!');
-        }
-
-        const motors = await prisma.motor.findMany({
-            where: { categoryId: categoryId },
-            take: limit,
-            skip: offset,
-        });
-
-        if (!motors || motors.length === 0) {
-            throw new BadRequestError(
-                'No motors found for the given category!'
-            );
-        }
-
-        return motors;
-    };
-
-    static getMotorDetail = async (motorId) => {
-        if (!motorId) {
-            throw new BadRequestError('Motor ID is required!');
-        }
-
-        const motorDetails = await prisma.motorDetail.findMany({
-            where: { motorId: motorId },
+        const accessoriesDetails = await prisma.accessoriesDetail.findMany({
+            where: { accessoriesId: accessoriesId },
             select: {
                 id: true,
-                motor: {
+                accessories: {
                     select: {
                         name: true,
                         slug: true,
@@ -111,31 +133,31 @@ class AccessoriesService {
                 colorId: true,
                 inventories: {
                     select: {
-                        stock: true,  // Lấy thông tin số lượng từ bảng inventories
+                        stock: true, // Lấy thông tin số lượng từ bảng inventories
                     },
                 },
             },
         });
         const images = await prisma.images.findMany({
-            where: { motorId: motorId },
+            where: { accessoriesId: accessoriesId },
         });
 
-        const motors = motorDetails.map((detail) => {
+        const accessoriesReal = accessoriesDetails.map((detail) => {
             // Lấy thông tin tồn kho từ bảng inventories
             const inventory = detail.inventories[0] || { stock: 0 };
 
             return {
                 id: detail.id,
-                motorId: motorId,
-                name: detail.motor.name,
-                slug: detail.motor.slug,
-                desc: detail.motor.desc,
-                mfg: detail.motor.mfg,
+                accessoriesId: accessoriesId,
+                name: detail.accessories.name,
+                slug: detail.accessories.slug,
+                desc: detail.accessories.desc,
+                mfg: detail.accessories.mfg,
                 originalPrice: detail.originalPrice,
                 salePrice: detail.salePrice,
-                colorId: detail.colorId,
-                color: detail.color.name,
-                colorImage: detail.color.img,
+                colorId: detail?.colorId,
+                color: detail.color?.name,
+                colorImage: detail.color?.img,
                 quantity: inventory.stock,
                 images: images.map((image) => ({
                     id: image.id,
@@ -144,14 +166,14 @@ class AccessoriesService {
             };
         });
 
-        if (!motors.length) {
+        if (!accessoriesReal.length) {
             throw new BadRequestError('Motor not found!');
         }
 
-        return motors;
+        return accessoriesReal;
     };
 
-    // Tạo một motor mới
+    // Tạo một accessories mới
     static createAccessories = async (
         name,
         desc,
@@ -315,36 +337,36 @@ class AccessoriesService {
         return motorWithDetails;
     };
 
-    static deleteMotor = async (id) => {
-        // Tìm motor để kiểm tra sự tồn tại của nó
-        const motor = await prisma.motor.findUnique({
+    static deleteAccessories = async (id) => {
+        // Tìm accessories để kiểm tra sự tồn tại của nó
+        const accessories = await prisma.accessories.findUnique({
             where: { id },
             include: {
-                motorDetails: true, // Bao gồm chi tiết motor để xóa các chi tiết motor liên quan
+                accessoriesDetail: true, // Bao gồm chi tiết accessories để xóa các chi tiết accessories liên quan
                 images: true, // Bao gồm hình ảnh để xóa các hình ảnh liên quan
             },
         });
 
-        if (!motor) {
-            throw new BadRequestError('Motor not found!');
+        if (!accessories) {
+            throw new BadRequestError('Accessories not found!');
         }
 
-        // Xóa tất cả các chi tiết motor liên quan
-        await prisma.motorDetail.deleteMany({
-            where: { motorId: id },
+        // Xóa tất cả các chi tiết accessories liên quan
+        await prisma.accessoriesDetail.deleteMany({
+            where: { accessoriesId: id },
         });
 
         // Xóa tất cả các hình ảnh liên quan
         await prisma.images.deleteMany({
-            where: { motorId: id },
+            where: { accessoriesId: id },
         });
 
-        // Xóa motor
-        await prisma.motor.delete({
+        // Xóa accessories
+        await prisma.accessories.delete({
             where: { id },
         });
 
-        return { message: 'Motor deleted successfully!' };
+        return { message: 'Accessories deleted successfully!' };
     };
 }
 
