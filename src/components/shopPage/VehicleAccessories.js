@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ApparelButton, ShopNowButton } from '../Styled';
 import './VehicleAccessories.scss';
 
 export default function VehicleAccessories(props) {
+    const navigate = useNavigate();
     const image = props.image;
     const title = props.title;
     const textColor = props.color;
@@ -20,11 +22,22 @@ export default function VehicleAccessories(props) {
                     {title}
                 </h1>
                 {props.button ? (
-                    <ApparelButton style={{ width: '20em' }}>
+                    <ApparelButton
+                        style={{ width: '20em' }}
+                        onClick={() => {
+                            navigate('/groupproject/category/motors');
+                        }}
+                    >
                         SHOP NOW
                     </ApparelButton>
                 ) : (
-                    <ShopNowButton>Shop Now</ShopNowButton>
+                    <ShopNowButton
+                        onClick={() => {
+                            navigate('/groupproject/category/motors');
+                        }}
+                    >
+                        Shop Now
+                    </ShopNowButton>
                 )}
             </div>
         </div>

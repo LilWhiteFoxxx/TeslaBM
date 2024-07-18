@@ -5,7 +5,7 @@ import { StyledOption, StyledSelector } from "./CartStyledComponents";
 
 const QuantitySelector = ({ handleSelect, itemQty }) => {
   const [dropDown, setDropDown] = useState(false);
-  const [maxQty, setMaxQty] = useState(20);
+  const maxQty = 20;
 
   let options = [...Array(maxQty)].map((el, index) => (
     <StyledOption
@@ -21,12 +21,10 @@ const QuantitySelector = ({ handleSelect, itemQty }) => {
   ));
 
   useEffect(() => {
-    //somehow this is allowing me to perform a blur effect on the dropdown button
-    //not sure how??? Might be glitchy no issues yet.
     if (dropDown) {
-      window.addEventListener("onmouseup", () => {});
+      window.addEventListener("mouseup", () => setDropDown(false));
     } else {
-      window.removeEventListener("onmouseup", () => {});
+      window.removeEventListener("mouseup", () => setDropDown(false));
     }
   }, [dropDown]);
 

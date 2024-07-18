@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addItem } from '../app/features/cartSlice';
+// import { addItem } from '../app/features/cartSlice';
 import './Card.scss';
 
 const Card = (props) => {
@@ -14,7 +14,7 @@ const Card = (props) => {
     const [size, setSize] = useState(false);
     const [selectedColor, setSelectedColor] = useState({});
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleProductClick = () => {
@@ -75,7 +75,7 @@ const Card = (props) => {
                     )}
                     <div
                         className="quickAdd"
-                        onClick={() => dispatch(addItem(props.product))}
+                        onClick={handleProductClick}
                         onMouseEnter={() => setSize(true)}
                         onMouseLeave={() => setSize(false)}
                     >

@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import ButtonAuth from '../../components/auth/ButtonAuth';
-import Recommend from '../../components/shopPage/Recommend';
+import InputAuth from '../../components/auth/InputAuth';
+import { addToCart } from '../../apis/cart';
+import { addItem } from '../../app/features/cartSlice';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './productDetail.scss';
 import 'swiper/swiper-bundle.css';
-import InputAuth from '../../components/auth/InputAuth';
+import Tesfayedev from '../../components/shopPage/Tesfayedev';
 
 const ProductDetail = () => {
-    const { user } = useSelector((state) => state.auth);
-
+    const dispatch = useDispatch();
     const location = useLocation();
+
+    const { user } = useSelector((state) => state.auth);
     const { product } = location.state || {};
 
     const images = [product?.itemImg, product?.itemImgHover];
@@ -52,6 +56,40 @@ const ProductDetail = () => {
             (detail) => detail.colorId === selectedColor
         ) || {};
 
+    const handleAddToCart = async () => {
+        const payload = {
+            type: product.category === 'motors' ? 'motor' : 'accessories',
+            productId: selectedColorDetail.id,
+            quantity: quantity,
+        };
+
+        try {
+            // console.log(payload);
+            const response = await addToCart(payload);
+            if (response.metadata) {
+                dispatch(
+                    addItem({
+                        type:
+                            product.category === 'motors'
+                                ? 'motor'
+                                : 'accessories',
+
+                        id: response.metadata.id,
+                        productName: product.itemName,
+                        quantity: quantity,
+                        price:
+                            selectedColorDetail.salePrice <
+                            selectedColorDetail.originalPrice
+                                ? selectedColorDetail.salePrice
+                                : selectedColorDetail.originalPrice,
+                    })
+                );
+                console.log('Item added to cart!', response.metadata);
+            }
+        } catch (error) {
+            console.error('Failed to add item to cart', error);
+        }
+    };
     return (
         <>
             <div className="product-detail-component flex bg-[#111] px-5">
@@ -111,12 +149,14 @@ const ProductDetail = () => {
                             {product?.stockStatus ? (
                                 <>
                                     <p className="product-price text-[#fff] text-[18px] mb-2">
-                                        {selectedColorDetail.salePrice?.toLocaleString(
-                                            'en-US'
-                                        ) ||
-                                            product?.itemPrice.toLocaleString(
-                                                'en-US'
-                                            )}{' '}
+                                        {selectedColorDetail?.salePrice <
+                                        selectedColorDetail?.originalPrice
+                                            ? selectedColorDetail?.salePrice?.toLocaleString(
+                                                  'en-US'
+                                              )
+                                            : selectedColorDetail?.originalPrice?.toLocaleString(
+                                                  'en-US'
+                                              )}{' '}
                                         VND
                                     </p>
 
@@ -233,6 +273,7 @@ const ProductDetail = () => {
                                     <ButtonAuth
                                         title={'ADD TO CART'}
                                         className={'btn-sign-up'}
+                                        onClick={handleAddToCart}
                                     />
                                 </>
                             ) : (
@@ -278,7 +319,7 @@ const ProductDetail = () => {
                     </div>
                 </div>
             </div>
-            <Recommend />
+            <Tesfayedev />
         </>
     );
 };
