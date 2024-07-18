@@ -89,6 +89,7 @@ class AccessoriesService {
 
                         return {
                             id: ad.id,
+                            accessoriesId: ad.accessoriesId,
                             colorId: ad?.colorId,
                             color: ad.color?.name,
                             colorImage: ad.color?.img,

@@ -28,6 +28,42 @@ class CartController {
         }
     };
 
+    updateCartItem = async (req, res, next) => {
+        try {
+            const cartItem = await CartService.updateCartItem(req.userId, req.body);
+            new SuccessResponse({
+                message: 'Update cartItem success!',
+                metadata: cartItem,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }; 
+
+    deleteCartItem = async (req, res, next) => {
+        try {
+            const cartItem = await CartService.deleteCartItem(req.userId, req.body);
+            new SuccessResponse({
+                message: 'Delete cartItem success!',
+                metadata: cartItem,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }; 
+
+    deleteCart = async (req, res, next) => {
+        try {
+            const cartItem = await CartService.deleteCart(req.userId);
+            new SuccessResponse({
+                message: 'Delete cart success!',
+                metadata: cartItem,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
 }
 
 module.exports = new CartController();

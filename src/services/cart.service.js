@@ -238,23 +238,28 @@ class CartService {
 
         if (!cart) throw new BadRequestError('Cart not found');
 
-        let item;
+        // if (payload.type === 'motor') {
+        //     item = await prisma.cartItem.findFirst({
+        //         where: {
+        //             cartId: cart.id,
+        //             motorDetailId: payload.productId,
+        //         },
+        //     });
+        // } else {
+        //     item = await prisma.cartItem.findFirst({
+        //         where: {
+        //             cartId: cart.id,
+        //             accessoriesDetailId: payload.productId,
+        //         },
+        //     });
+        // }
 
-        if (payload.type === 'motor') {
-            item = await prisma.cartItem.findFirst({
-                where: {
-                    cartId: cart.id,
-                    motorDetailId: payload.productId,
-                },
-            });
-        } else {
-            item = await prisma.cartItem.findFirst({
-                where: {
-                    cartId: cart.id,
-                    accessoriesDetailId: payload.productId,
-                },
-            });
-        }
+        const item = await prisma.cartItem.findFirst({
+            where: {
+                id: payload.id,
+                cartId: cart.id,
+            },
+        });
 
         if (!item) {
             throw new BadRequestError('CartItem not found');
@@ -269,8 +274,8 @@ class CartService {
         return { message: 'CartItem deleted successfully' };
     };
 
-    static deleteCart = async (userId, payload) => {
-        if (!userId || !payload) {
+    static deleteCart = async (userId) => {
+        if (!userId) {
             throw new BadRequestError('Required!');
         }
 
