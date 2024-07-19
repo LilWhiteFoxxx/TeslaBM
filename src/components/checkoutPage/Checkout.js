@@ -1,230 +1,100 @@
-import React from "react";
-import styled from "styled-components";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { CartPage, MobileCheckoutBtn } from '../cart/CartStyledComponents';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-const StyledCheckoutPage = styled.div`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  padding-top: 160px;
-  max-width: 362px;
-  margin: auto;
-  min-height: calc(97vh);
-  text-align: left;
-  h1 {
-    font-size: 28px;
-    font-family: "Gotham-Medium", sans-serif;
-  }
-  .checkout-sign-in {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    .checkout-email-sign-in-title {
-      display: flex;
-      align-items: center;
-      font-family: "Gotham-Bold", sans-serif;
-      color: #7d7e81;
-      width: 320px;
-      margin: auto;
-      .email-info-button {
-        font-family: "Gotham-Bold", sans-serif;
-        background-color: #3e6ae1;
-        height: 20px;
-        width: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        border-radius: 50%;
-        font-size: 12px;
-        border: none;
-        margin-left: 8px;
-      }
-    }
-    .checkout-email-sign-in-input {
-      border-radius: 20px;
-      outline: ${({ valid }) => (valid ? "none" : "2px solid #CA7970")};
-      background-color: #f5f5f5;
-      position: relative;
-      &:focus-within {
-        outline: ${({ valid }) =>
-          valid ? "2px solid #d0d1d2" : "2px solid #CA7970"};
-      }
-      input {
-        display: block;
-        border: none;
-        outline: none;
-        width: 320px;
-        height: 38px;
-        margin: auto;
-        background: none;
-      }
-      &::before {
-        content: "Please enter valid email address";
-        opacity: ${({ valid }) => (valid ? "0" : "1")};
-        position: absolute;
-        bottom: 0px;
-        left: 16px;
-        transform: translateY(calc(100% + 4px));
-        font-size: 14px;
-        color: #b74134;
-      }
-    }
-    .checkout-sign-in-button {
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 20px;
-      background-color: #3d69e1;
-      border: none;
-      color: white;
-      position: relative;
-      &:active,
-      :focus {
-        &::after {
-          content: "";
-          border: 2px solid white;
-          position: absolute;
-          width: calc(100% - 6px);
-          height: calc(100% - 6px);
-          top: 3px;
-          left: 3px;
-          border-radius: 32px;
-        }
-      }
-      &:hover {
-        background-image: linear-gradient(
-          rgba(0, 0, 0, 0.1),
-          rgba(0, 0, 0, 0.1)
-        );
-      }
-    }
-    .forgot-something-options {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 1em;
-      p {
-        border-bottom: 1px solid #212529;
-        line-height: 1em;
-      }
-      hr {
-        height: 1em;
-        width: 2px;
-        background: #212529;
-        border: none;
-        opacity: 1;
-      }
-    }
-  }
-  .checkout-sign-in-divider {
-    display: block;
-    height: 2px;
-    width: 100%;
-    margin: 60px 0px;
-    background: rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: visible;
-    opacity: 1;
-    border: none;
-    &::before {
-      content: "OR";
-      position: absolute;
-      top: 0px;
-      background: white;
-      top: 50%;
-      left: 50%;
-      padding: 8px;
-      transform: translate(-50%, -50%);
-    }
-  }
-  .guest-checkout {
-    p {
-      font-size: 14px;
-      margin: 20px 0px;
-    }
-    button {
-      height: 40px;
-      display: flex;
-      width: 100%;
-      align-items: center;
-      justify-content: center;
-      border-radius: 20px;
-      background-color: white;
-      border: none;
-      color: black;
-      position: relative;
-      outline: 3px solid black;
-      &:hover {
-        background-color: black;
-        color: white;
-      }
-    }
-  }
-`;
+import { OrderSummary } from '../cart/OrderSummary';
+import { CartItem } from '../cart/CartItem';
+import { getCart } from '../../apis/cart'; // Import the new functions
+import Footer from '../Footer';
+import { checkCartItem } from '../../apis/checkout';
+import { toast } from 'react-toastify';
 
 export default function Checkout() {
-  const [justChecking, setJustChecking] = useState(false);
-  const [input, setInput] = useState("");
-  const [valid, setValid] = useState(true);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [carts, setCarts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getCart();
+                setCarts(res.metadata);
+            } catch (error) {
+                console.error('Failed to fetch data', error);
+                setError('Failed to load cart data.');
+            }
+        };
 
-  const validateEmail = () => {
-    let regexp =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (input.length) {
-      setValid(regexp.test(String(input).toLowerCase()));
-      return true;
-    }
-    setValid(false);
-    return false;
-  };
+        fetchData();
+    }, [dispatch]);
 
-  return (
-    <StyledCheckoutPage valid={valid} justChecking={justChecking}>
-      <div className='checkout-sign-in'>
-        <h1>Sign In</h1>
-        <p className='checkout-email-sign-in-title'>
-          Email Address <button className='email-info-button'>i</button>
-        </p>
-        <div className='checkout-email-sign-in-input'>
-          <input
-            type='text'
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onBlur={validateEmail}
-          />
-        </div>
+    const handleUpdateCart = async (updatedCart) => {
+        try {
+            setCarts(updatedCart);
+        } catch (error) {
+            console.error('Failed to update cart', error);
+            setError('Failed to update cart.');
+        }
+    };
 
-        <button
-          className='checkout-sign-in-button'
-          onClick={() => {
-            validateEmail() && navigate("confirm");
-          }}
-        >
-          CONTINUE
-        </button>
-        <div className='forgot-something-options'>
-          <p>Forgot email?</p>
-          <hr />
-          <p>Forgot password?</p>
-        </div>
-      </div>
-      <hr className='checkout-sign-in-divider' />
-      <div className='guest-checkout'>
-        <h1>Guest Checkout</h1>
-        <p>
-          You'll have the opportunity to create an account after you complete
-          checkout.
-        </p>
-        <button onClick={() => navigate("confirm")}>CONTINUE AS GUEST</button>
-      </div>
-    </StyledCheckoutPage>
-  );
+    const handleCheckout = async () => {
+        setIsLoading(true);
+        try {
+            // Check each cart item
+            for (const item of carts) {
+                const res = await checkCartItem({ id: item.id });
+                if (res.metadata) {
+                    console.log(res.metadata);
+                } else {
+                    console.log(res.message);
+                    toast.error(`${item.itemName} - ${res.message}`);
+                    return;
+                }
+            }
+            toast.success('Checkout success!');
+
+            // Proceed to checkout
+            // await checkout();
+            // navigate('/groupproject/confirmation'); //
+        } catch (error) {
+            console.error('Checkout error', error);
+            setError('Checkout failed. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <CartPage>
+            <div className="cartContainer">
+                <h1 className="text-[24px] font-bold">CHECKOUT</h1>
+                {error && <p className="error-message">{error}</p>}
+                <div className="cartContent">
+                    <div className="cartItems">
+                        {carts.map((cart) => (
+                            <CartItem
+                                key={cart.id}
+                                cart={cart}
+                                cartId={cart.id}
+                                onUpdateCart={handleUpdateCart}
+                                isCart={false}
+                            />
+                        ))}
+                    </div>
+                    <OrderSummary cart={carts} isCart={false} />
+                    <div className="cartExtraFooterController">
+                        <Footer />
+                    </div>
+                </div>
+            </div>
+            <MobileCheckoutBtn>
+                <button onClick={handleCheckout} disabled={isLoading}>
+                    {isLoading ? 'Processing...' : 'CONFIRM'}
+                </button>
+            </MobileCheckoutBtn>
+        </CartPage>
+    );
 }

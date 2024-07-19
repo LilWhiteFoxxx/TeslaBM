@@ -149,7 +149,7 @@ const ProductDetail = () => {
                             {product?.stockStatus ? (
                                 <>
                                     <p className="product-price text-[#fff] text-[18px] mb-2">
-                                        {selectedColorDetail?.salePrice <
+                                        ${selectedColorDetail?.salePrice <
                                         selectedColorDetail?.originalPrice
                                             ? selectedColorDetail?.salePrice?.toLocaleString(
                                                   'en-US'
@@ -157,7 +157,7 @@ const ProductDetail = () => {
                                             : selectedColorDetail?.originalPrice?.toLocaleString(
                                                   'en-US'
                                               )}{' '}
-                                        VND
+                                        
                                     </p>
 
                                     {!user && (

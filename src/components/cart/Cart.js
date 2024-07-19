@@ -45,7 +45,7 @@ export default function Cart() {
     return (
         <CartPage>
             <div className="cartContainer">
-                <h1 className="text-[24px] font-medium">Cart</h1>
+                <h1 className="text-[24px] font-bold">CART</h1>
 
                 <div className="cartContent">
                     <div className="cartItems">

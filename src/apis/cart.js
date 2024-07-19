@@ -45,11 +45,10 @@ export const updateCartItem = async (payload) => {
 
 export const deleteCartItem = async (payload) => {
     try {
-        console.log(payload.id);
-        const body = {
-            id: payload.id
-        }
-        const response = await axios.delete(`/cart/deletecartitem`, body);
+        // const body = {
+        //     id: payload.id
+        // }
+        const response = await axios.delete(`/cart/deletecartitem/${payload.id}`);
 
         return response;
     } catch (error) {

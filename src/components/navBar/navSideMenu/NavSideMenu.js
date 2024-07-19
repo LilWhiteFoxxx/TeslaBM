@@ -214,9 +214,9 @@ export default function NavSideMenu({
         console.log(listItem);
         // setSubCategories(listItem);
         // setShowSubCategories(true);
-        // navigate(
-        //   `category/${listItem.category.toLocaleLowerCase().replace(/\s/g, "-")}`
-        // );
+        navigate(
+          `category/${listItem.category.toLocaleLowerCase().replace(/\s/g, "-")}`
+        );
     };
 
     const handleClose = () => {

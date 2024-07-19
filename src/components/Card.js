@@ -110,12 +110,11 @@ const Card = (props) => {
                         {itemName}
                     </p>
                     <p className="itemPrice">
-                        {typeof itemPrice === 'object'
+                        ${typeof itemPrice === 'object'
                             ? `${itemPrice[0].toLocaleString(
                                   'en-US'
                               )} - $${itemPrice[1].toLocaleString('en-US')}`
-                            : itemPrice.toLocaleString('en-US')}{' '}
-                        VND
+                            : itemPrice.toLocaleString('en-US')}
                     </p>
                 </div>
                 {product.options.includes('select-color') && product.color2 ? (

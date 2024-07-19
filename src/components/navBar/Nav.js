@@ -219,7 +219,7 @@ export default function Nav() {
             <NavSideMenu
                 showSideMenu={showSideMenu}
                 setShowSideMenu={setShowSideMenu}
-                navList={navList}
+                navList={categoryList}
             />
             <DropDown dropDown={dropDown} handleLeave={handleLeave} />
             <StyledNav

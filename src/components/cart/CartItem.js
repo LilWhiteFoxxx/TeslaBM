@@ -5,12 +5,16 @@ import QuantitySelector from './QuantitySelector';
 import { deleteCartItem, getCart, updateCartItem } from '../../apis/cart';
 import { removeItem } from '../../app/features/cartSlice';
 
-export const CartItem = ({ cart, cartId, onUpdateCart }) => {
+export const CartItem = ({ cart, cartId, onUpdateCart, isCart = true }) => {
     const dispatch = useDispatch();
     const [itemQty, setItemQty] = useState(cart.quantity);
     const [itemPrice, setItemPrice] = useState(cart.originalPrice);
-    const [productId, setProductId] = useState(cart.motorDetailId || cart.accessoriesDetailId);
-    const [type, setType] = useState(cart.motorDetailId ? 'motor' : 'accessories');
+    const [productId, setProductId] = useState(
+        cart.motorDetailId || cart.accessoriesDetailId
+    );
+    const [type, setType] = useState(
+        cart.motorDetailId ? 'motor' : 'accessories'
+    );
 
     useEffect(() => {
         if (cart.salePrice < cart.originalPrice) {
@@ -49,7 +53,12 @@ export const CartItem = ({ cart, cartId, onUpdateCart }) => {
 
     const handleRemove = async () => {
         try {
-            console.log('Removing item with productId:', productId, 'and type:', type);
+            console.log(
+                'Removing item with productId:',
+                productId,
+                'and type:',
+                type
+            );
             console.log('cartId:', cartId);
 
             const response = await deleteCartItem({ id: cartId });
@@ -68,27 +77,47 @@ export const CartItem = ({ cart, cartId, onUpdateCart }) => {
         <StyledCartItem>
             <img src={cart.itemImg} alt="" />
             <div className="cartItemDescription">
-                <h3>{cart.itemName}</h3>
+                <h3 className='font-bold'>{cart.itemName}</h3>
                 <p>Options go Here</p>
-                <div className="quantity-selector-main-cart">
-                    Quantity:
-                    <span>
-                        <QuantitySelector
-                            handleSelect={handleSelect}
-                            itemQty={itemQty}
+                {cart?.colorId && (
+                    <div className="color-display">
+                        <p>Color:</p>
+                        <img
+                            src={cart.colorImg}
+                            alt={cart.colorName}
+                            className="color-box"
                         />
-                    </span>
-                    <span onClick={handleRemove} className="cart-item-remove">
-                        Remove
-                    </span>
-                </div>
+                    </div>
+                )}
+                {isCart ? (
+                    <div className="quantity-selector-main-cart">
+                        Quantity:
+                        <span>
+                            <QuantitySelector
+                                handleSelect={handleSelect}
+                                itemQty={itemQty}
+                            />
+                        </span>
+                        <span
+                            onClick={handleRemove}
+                            className="cart-item-remove"
+                        >
+                            Remove
+                        </span>
+                    </div>
+                ) : (
+                    <div className="gap-2 quantity-selector-main-cart">
+                        <p>Quantity: </p>
+                        <p className='font-bold'>{itemQty}</p>
+                    </div>
+                )}
             </div>
             <h3 className="cartItemPrice">
-                {itemPrice.toLocaleString('en-US')} VND
+                ${itemPrice.toLocaleString('en-US')}
             </h3>
             {cart.salePrice < cart.originalPrice && (
                 <h3 className="cartItemOriginalPrice">
-                    <del>{cart.originalPrice.toLocaleString('en-US')} VND</del>
+                    <del>${cart.originalPrice.toLocaleString('en-US')}</del>
                 </h3>
             )}
         </StyledCartItem>
