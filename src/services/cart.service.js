@@ -225,8 +225,8 @@ class CartService {
         return item;
     };
 
-    static deleteCartItem = async (userId, payload) => {
-        if (!userId || !payload) {
+    static deleteCartItem = async (userId, cartItemId) => {
+        if (!userId || !cartItemId) {
             throw new BadRequestError('Required!');
         }
 
@@ -256,7 +256,7 @@ class CartService {
 
         const item = await prisma.cartItem.findFirst({
             where: {
-                id: payload.id,
+                id: cartItemId,
                 cartId: cart.id,
             },
         });

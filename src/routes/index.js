@@ -11,5 +11,7 @@ router.use('/api/v1', require('./firebase'))
 router.use('/api/v1', require('./access'))
 router.use('/api/v1/user', require('./user'))
 router.use('/api/v1/cart', require('./cart'))
+router.use('/api/v1/checkout', require('./checkout'))
+router.use('/api/v1/order', require('./order'))
 
 module.exports = router

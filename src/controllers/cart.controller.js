@@ -42,7 +42,7 @@ class CartController {
 
     deleteCartItem = async (req, res, next) => {
         try {
-            const cartItem = await CartService.deleteCartItem(req.userId, req.body);
+            const cartItem = await CartService.deleteCartItem(req.userId, parseInt(req.params.id));
             new SuccessResponse({
                 message: 'Delete cartItem success!',
                 metadata: cartItem,
