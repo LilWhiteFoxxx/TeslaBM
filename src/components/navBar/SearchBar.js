@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+
 import { ReactComponent as SearchBtn } from "../../Assets/images/search.svg";
 import { StyledSearchBar } from "./NavStyledComponents";
+// import styled from "styled-components";
 
 export default function SearchBar({ initialActive }) {
   const searchInput = useRef();

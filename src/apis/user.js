@@ -76,3 +76,15 @@ export const uploadUserInfo = async (payload) => {
         throw error; 
     }
 }
+
+export const getUserInfo = async () => {
+    try {
+       
+        const response = await axios.post('/user/me');
+
+        return response;
+    } catch (error) {
+        console.error('upload userinfo error:', error.response?.data || error.message);
+        throw error; 
+    }
+}

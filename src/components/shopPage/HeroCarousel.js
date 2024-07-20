@@ -1,12 +1,13 @@
 import React from 'react';
+
 import './HeroCarousel.scss';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import wallConnector from '../../Assets/images/wall_connector.avif';
-import homeBanner from '../../Assets/images/bmw-s1000rr-1.jpg';
-import chillBanner from '../../Assets/images/chill_banner.avif';
-import floorMats from '../../Assets/images/floormats.avif';
 import { ShopNowButton } from '../Styled';
+// import wallConnector from '../../Assets/images/wall_connector.avif';
+// import homeBanner from '../../Assets/images/bmw-s1000rr-1.jpg';
+// import chillBanner from '../../Assets/images/chill_banner.avif';
+// import floorMats from '../../Assets/images/floormats.avif';
 
 export default function HeroCarousel() {
     return (

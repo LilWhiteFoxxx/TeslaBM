@@ -119,6 +119,7 @@ export default function Nav() {
             '/groupproject/cart',
             '/groupproject/checkout',
             '/groupproject/checkout/confirm',
+            '/groupproject/invoicer'
         ];
     
         const isFixedPath = fixedPaths.includes(location.pathname);

@@ -16,6 +16,7 @@ import ForgotPassword from '../pages/auth/ForgotPassword';
 import ProductDetail from '../pages/product/ProductDetail';
 import PersonalInfoForm from '../components/profile/PersonalInfoForm';
 import Wallet from '../components/profile/Wallet';
+import Bill from '../components/bill/Bill';
 
 export default function MyRouter() {
     return (
@@ -47,6 +48,11 @@ export default function MyRouter() {
                         // exact
                         path="/groupproject/checkout"
                         element={<Checkout />}
+                    />
+                    <Route
+                        // exact
+                        path="/groupproject/invoicer"
+                        element={<Bill />}
                     />
                     <Route
                         // exact

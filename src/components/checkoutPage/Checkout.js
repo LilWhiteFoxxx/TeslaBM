@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { CartPage, MobileCheckoutBtn } from '../cart/CartStyledComponents';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
+import { checkCartItem } from '../../apis/checkout';
 import { OrderSummary } from '../cart/OrderSummary';
 import { CartItem } from '../cart/CartItem';
 import { getCart } from '../../apis/cart'; // Import the new functions
 import Footer from '../Footer';
-import { checkCartItem } from '../../apis/checkout';
-import { toast } from 'react-toastify';
 
 export default function Checkout() {
     const navigate = useNavigate();
@@ -54,11 +54,11 @@ export default function Checkout() {
                     return;
                 }
             }
+            navigate('/groupproject/invoicer');
             toast.success('Checkout success!');
 
             // Proceed to checkout
             // await checkout();
-            // navigate('/groupproject/confirmation'); //
         } catch (error) {
             console.error('Checkout error', error);
             setError('Checkout failed. Please try again.');

@@ -130,8 +130,6 @@ export const StyledOrderSummary = styled.div`
         justify-content: center;
     }
     .payment-methods {
-        margin-top: 20px;
-
         p {
             margin-bottom: 10px;
             font-weight: bold;
