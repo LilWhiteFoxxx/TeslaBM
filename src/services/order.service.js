@@ -55,8 +55,8 @@ class OrderService {
         if (!orderId) {
             throw new BadRequestError('Order ID is required');
         }
-
-        // Find the order
+    
+        // Find the order with initial details
         const order = await prisma.order.findUnique({
             where: { id: orderId },
             include: {
@@ -71,13 +71,82 @@ class OrderService {
                 orderStatus: true,
             },
         });
-
+    
         if (!order) {
             throw new NotFoundError('Order not found');
         }
-
-        return order;
+    
+        // Extract IDs from orderLine
+        const motorDetailIds = order.orderLine.map(line => line.motorDetailId).filter(id => id);
+        const accessoriesDetailIds = order.orderLine.map(line => line.accessoriesDetailId).filter(id => id);
+    
+        // Fetch motor details
+        const motorDetails = motorDetailIds.length > 0 ? await prisma.motorDetail.findMany({
+            where: {
+                id: {
+                    in: motorDetailIds,
+                },
+            },
+        }) : [];
+    
+        // Extract motorIds from motorDetails
+        const motorIds = motorDetails.map(detail => detail.motorId).filter(id => id);
+    
+        // Fetch motors
+        const motors = motorIds.length > 0 ? await prisma.motor.findMany({
+            where: {
+                id: {
+                    in: motorIds,
+                },
+            },
+        }) : [];
+    
+        // Fetch accessories details
+        const accessoriesDetails = accessoriesDetailIds.length > 0 ? await prisma.accessoriesDetail.findMany({
+            where: {
+                id: {
+                    in: accessoriesDetailIds,
+                },
+            },
+        }) : [];
+    
+        // Extract accessoriesIds from accessoriesDetails
+        const accessoriesIds = accessoriesDetails.map(detail => detail.accessoriesId).filter(id => id);
+    
+        // Fetch accessories
+        const accessories = accessoriesIds.length > 0 ? await prisma.accessories.findMany({
+            where: {
+                id: {
+                    in: accessoriesIds,
+                },
+            },
+        }) : [];
+    
+        // Create maps for quick lookup
+        const motorDetailsMap = new Map(motorDetails.map(detail => [detail.id, detail]));
+        const motorsMap = new Map(motors.map(motor => [motor.id, motor]));
+        const accessoriesDetailsMap = new Map(accessoriesDetails.map(detail => [detail.id, detail]));
+        const accessoriesMap = new Map(accessories.map(accessory => [accessory.id, accessory]));
+    
+        // Flatten the orderLine with additional details
+        const updatedOrderLines = order.orderLine.map(line => {
+            const motorDetail = motorDetailsMap.get(line.motorDetailId) || null;
+            const accessoriesDetail = accessoriesDetailsMap.get(line.accessoriesDetailId) || null;
+            return {
+                ...line,
+                motorDetail: motorDetail,
+                motor: motorDetail ? motorsMap.get(motorDetail.motorId) || null : null,
+                accessoriesDetail: accessoriesDetail,
+                accessories: accessoriesDetail ? accessoriesMap.get(accessoriesDetail.accessoriesId) || null : null,
+            };
+        });
+    
+        return {
+            ...order,
+            orderLine: updatedOrderLines,
+        };
     }
+    
 
     // Update order status
     static async updateOrderStatus(orderId, statusId) {

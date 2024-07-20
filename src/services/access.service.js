@@ -10,7 +10,7 @@ const nodemailer = require('nodemailer');
 const accessTokenSecret = process.env.ACCESS_SECRETKEY;
 const refreshTokenSecret = process.env.REFRESH_SECRETKEY;
 const emailVerificationSecret = process.env.EMAIL_SECRETKEY;
-const passwordResetSecret = process.env.PASSWORD_SECRETKEY
+const passwordResetSecret = process.env.PASSWORD_SECRETKEY;
 
 const mailTransporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -24,6 +24,9 @@ class AccessService {
     static me = async (userId) => {
         const user = await prisma.users.findFirst({
             where: { id: userId },
+            include: {
+                address: true,
+            },
         });
         if (!user) {
             throw new BadRequestError('User not found!');
@@ -130,9 +133,9 @@ class AccessService {
 
         await prisma.cart.create({
             data: {
-                userId: user.id
-            }
-        })
+                userId: user.id,
+            },
+        });
 
         return { message: 'Email verified successfully' };
     };
@@ -140,6 +143,9 @@ class AccessService {
     static login = async ({ email, password }) => {
         const user = await prisma.users.findFirst({
             where: { email },
+            include: {
+                address: true
+            }
         });
 
         if (!user) {
@@ -223,7 +229,7 @@ class AccessService {
 
     static forgotPassword = async (payload) => {
         const user = await prisma.users.findFirst({
-            where: { email : payload.email },
+            where: { email: payload.email },
         });
 
         if (!user) {

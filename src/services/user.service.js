@@ -8,7 +8,10 @@ class UserService {
 
     static me = async (userId) => {
         const user = await prisma.users.findFirst({
-            where: { id: userId }
+            where: { id: userId },
+            include: {
+                address: true
+            }
         })
 
         if (!user) {
