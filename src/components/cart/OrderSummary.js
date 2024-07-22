@@ -18,7 +18,7 @@ export const OrderSummary = ({ cart, isCart = true }) => {
     const [paymentMethod, setPaymentMethod] = useState('1');
 
     const cartTotal = useMemo(() => {
-        return cart.reduce((total, item) => {
+        return cart?.reduce((total, item) => {
             const price =
                 item.salePrice < item.originalPrice
                     ? item.salePrice
@@ -67,8 +67,10 @@ export const OrderSummary = ({ cart, isCart = true }) => {
     };
 
     const handleCheckCart = () => {
-        if(cart.length > 0) {
+        if(cart?.length > 0) {
             navigate('/groupproject/checkout')
+        } else {
+            toast.error('No product in cart! Please add to cart')
         }
     }
 
@@ -86,7 +88,7 @@ export const OrderSummary = ({ cart, isCart = true }) => {
                 <span>Calculated at checkout</span>
             </p>
             <h2>
-                Subtotal <span>${cartTotal.toLocaleString('en-US')}</span>
+                Subtotal <span>${cartTotal?.toLocaleString('en-US')}</span>
             </h2>
             {!isCart && (
                 <>
