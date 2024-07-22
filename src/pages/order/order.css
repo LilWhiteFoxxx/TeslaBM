@@ -1,0 +1,20 @@
+.order-page{
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
+}
+
+@media screen and (max-width: 1200px) {
+    .order-page{
+        justify-content:flex-start;
+        margin-top: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px)
+{
+    .order-page{
+        align-items: center;
+    }
+}

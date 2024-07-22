@@ -1,3 +1,5 @@
+/* @import './tailwind.css'; */
+
 :root {
   --yellow: linear-gradient(180deg, #F8D49A -146.42%, #FAD79D -46.42%);
   --orange: #fca61f;
@@ -39,14 +41,14 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .AppGlass{
+  .AppGlass {
     grid-template-columns: 10% 50% auto;
     overflow-y: scroll;
-  } 
+  }
 }
 
 @media screen and (max-width: 768px) {
-  .AppGlass{
+  .AppGlass {
     grid-template-columns: 1fr;
-  } 
+  }
 }

@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Route from './routes/Route';
+import { Provider } from 'react-redux';
 
-// ReactDOM.render(
-//     <App />,
-//   document.getElementById('root')
-// );
+
+import Route from './routes/Route';
+import { store } from './store/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        {/* <Provider store={store}> */}
+        <Provider store={store}>
         <Route />
         {/* <ToastContainer
                 position="top-right"
@@ -24,6 +23,6 @@ root.render(
                 pauseOnHover={false}
                 theme="light"
             /> */}
-        {/* </Provider> */}
+        </Provider>
     </React.StrictMode>
 );
