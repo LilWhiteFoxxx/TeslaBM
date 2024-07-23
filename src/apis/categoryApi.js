@@ -12,6 +12,12 @@ export const categoryApi = createApi({
                 method: 'get',
             }),
         }),
+        getAccessoriesCategory: builder.query({
+            query: (payload) => ({
+                url: `/categories/accessories?limit=${payload.limit}&offset=${payload.offset}`,
+                method: 'get',
+            }),
+        }),
         deleteCategory: builder.mutation({
             query: (id) => ({
                 url: `/categories/${id}`,
@@ -27,9 +33,18 @@ export const categoryApi = createApi({
                 },
             }),
         }),
+        updateCategory: builder.mutation({
+            query: (payload) => ({
+                url: `/categories/${payload.id}`,
+                method: 'put',
+                data: {
+                    name: payload.name,
+                },
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetMotorCategoryQuery, useDeleteCategoryMutation, useCreateCategoryMutation } = categoryApi;
+export const { useGetMotorCategoryQuery, useGetAccessoriesCategoryQuery, useDeleteCategoryMutation, useCreateCategoryMutation, useUpdateCategoryMutation } = categoryApi;

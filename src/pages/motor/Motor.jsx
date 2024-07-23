@@ -18,6 +18,7 @@ const MotorPage = () => {
         });
     const [createMotor] = useCreateMotorMutation();
     const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(''); // State for selected category
 
     const handleAddProduct = async (product) => {
         try {
@@ -31,6 +32,12 @@ const MotorPage = () => {
         }
     };
 
+    // Filter data based on the selected category
+    const filteredData =
+        data?.metadata.filter((product) =>
+            selectedCategory ? product.categoryName === selectedCategory : true
+        ) || [];
+
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error loading motors.</p>;
     if (categoryError) return <p>Error loading categories.</p>;
@@ -38,17 +45,32 @@ const MotorPage = () => {
     return (
         <div className="motor-page">
             <h1>Motors</h1>
-            <div className="flex justify-end w-full mb-4">
+            <div className="flex place-content-between w-full mb-2">
+                <div className="filter-container mb-4">
+                    <select
+                        className="filter-select text-black font-bold px-4 py-2 rounded"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        <option value="">All Categories</option>
+                        {categoriesData?.metadata.map((category) => (
+                            <option key={category.id} value={category.name}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded max-w-[200px]"
+                    className="btn-add text-black font-bold px-4 py-2 rounded max-w-[200px] h-[40px] min-h-[40px]"
                     onClick={() => setModalOpen(true)}
                     aria-label="Add New Product"
                 >
                     Add Product
                 </button>
             </div>
+
             <div className="table-container">
-                <ProductTable products={data?.metadata || []} />
+                <ProductTable products={filteredData} />
             </div>
             {isModalOpen && (
                 <div className="modal-add">

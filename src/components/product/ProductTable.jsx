@@ -36,14 +36,22 @@ const ProductTable = ({ products }) => {
                             </td>
                             <td className="py-2 px-4 border-b">
                                 <div className="flex items-center">
-                                    <img
-                                        src={product.colorImage}
-                                        alt="Color"
-                                        className="w-8 h-8 rounded-full object-cover border-2 border-solid border-black"
-                                    />
-                                    <span className="ml-1">
-                                        {capitalizeFirstLetter(product.color)}
-                                    </span>
+                                    {product.colorId ? (
+                                        <>
+                                            <img
+                                                src={product.colorImage}
+                                                alt="Color"
+                                                className="w-8 h-8 rounded-full object-cover border-2 border-solid border-black"
+                                            />
+                                            <span className="ml-1">
+                                                {capitalizeFirstLetter(
+                                                    product.color
+                                                )}
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span>No</span>
+                                    )}
                                 </div>
                             </td>
                             <td className="py-2 px-4 border-b">
