@@ -80,7 +80,7 @@ export const uploadUserInfo = async (payload) => {
 export const getUserInfo = async () => {
     try {
        
-        const response = await axios.post('/user/me');
+        const response = await axios.get('/user/me');
 
         return response;
     } catch (error) {

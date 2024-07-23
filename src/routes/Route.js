@@ -17,6 +17,9 @@ import ProductDetail from '../pages/product/ProductDetail';
 import PersonalInfoForm from '../components/profile/PersonalInfoForm';
 import Wallet from '../components/profile/Wallet';
 import Bill from '../components/bill/Bill';
+import Success from '../pages/checkout/Success';
+import Error from '../pages/checkout/Error';
+import Invoice from '../components/bill/Invoice';
 
 export default function MyRouter() {
     return (
@@ -56,6 +59,11 @@ export default function MyRouter() {
                     />
                     <Route
                         // exact
+                        path="/groupproject/invoicer/:orderId"
+                        element={<Invoice />}
+                    />
+                    <Route
+                        // exact
                         path="/groupproject/checkout/confirm"
                         element={<Confirmation />}
                     />
@@ -85,6 +93,8 @@ export default function MyRouter() {
                     path="/groupproject/forgotpassword"
                     element={<ForgotPassword />}
                 />
+                <Route path="/groupproject/success" element={<Success />} />
+                <Route path="/groupproject/error" element={<Error />} />
             </Routes>
         </Router>
     );

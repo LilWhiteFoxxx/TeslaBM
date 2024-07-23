@@ -8,6 +8,7 @@ import { checkCartItem } from '../../apis/checkout';
 import { createOrder } from '../../apis/order';
 import { deleteCart } from '../../apis/cart';
 import { clearCart } from '../../app/features/cartSlice';
+import { makePayment } from '../../apis/payment'; // Import makePayment function
 
 export const OrderSummary = ({ cart, isCart = true }) => {
     const navigate = useNavigate();
@@ -44,22 +45,50 @@ export const OrderSummary = ({ cart, isCart = true }) => {
                     return;
                 }
             }
-            // Proceed to checkout
-            // await checkout();
-            const order = await createOrder({
-                cartItems: cart,
-                paymentMethodId: paymentMethod,
-            });
-            if (order.metadata) {
-                toast.success('Checkout success!');
 
-                navigate('/groupproject/invoicer', {
-                    state: order.metadata.id,
+            if (paymentMethod === '1') {
+                // Create order and handle cash payment
+                const order = await createOrder({
+                    cartItems: cart,
+                    paymentMethodId: paymentMethod,
                 });
-                const res = await deleteCart();
-                if (res.metadata) {
-                    dispatch(clearCart());
+
+                if (order.metadata) {
+                    toast.success('Checkout success!');
+
+                    navigate('/groupproject/invoicer', {
+                        state: order.metadata.id,
+                    });
+
+                    const res = await deleteCart();
+                    if (res.metadata) {
+                        dispatch(clearCart());
+                    }
                 }
+            } else if (paymentMethod === '2') {
+                // Handle online payment
+                await makePayment({ products: cart });
+
+                // if (paymentResult.success) {
+                //     // Assuming makePayment returns an object with a success flag
+                //     // After successful payment, create the order and clear the cart
+                //     const order = await createOrder({
+                //         cartItems: cart,
+                //         paymentMethodId: paymentMethod,
+                //     });
+
+                //     if (order.metadata) {
+                //         toast.success('Payment successful and order created!');
+                //         navigate('/groupproject/invoicer', {
+                //             state: order.metadata.id,
+                //         });
+
+                //         const res = await deleteCart();
+                //         if (res.metadata) {
+                //             dispatch(clearCart());
+                //         }
+                //     }
+                // }
             }
         } catch (error) {
             console.error('Checkout error', error);
@@ -67,12 +96,12 @@ export const OrderSummary = ({ cart, isCart = true }) => {
     };
 
     const handleCheckCart = () => {
-        if(cart?.length > 0) {
-            navigate('/groupproject/checkout')
+        if (cart?.length > 0) {
+            navigate('/groupproject/checkout');
         } else {
-            toast.error('No product in cart! Please add to cart')
+            toast.error('No product in cart! Please add to cart');
         }
-    }
+    };
 
     return (
         <StyledOrderSummary>
@@ -120,10 +149,7 @@ export const OrderSummary = ({ cart, isCart = true }) => {
                 </>
             )}
             {isCart ? (
-                <button
-                    className="checkoutButton"
-                    onClick={handleCheckCart}
-                >
+                <button className="checkoutButton" onClick={handleCheckCart}>
                     CHECKOUT
                 </button>
             ) : (
