@@ -1,20 +1,86 @@
-.motor-page{
+/* motor.css */
+.motor-page {
     padding-top: 100px;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-evenly; */
+    /* align-items: center; */
 }
 
+.motor-page h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* Media queries for responsive design */
 @media screen and (max-width: 1200px) {
-    .motor-page{
-        justify-content:flex-start;
+    .motor-page {
         margin-top: 2rem;
+        align-items: flex-start; /* Align items to the start on medium screens */
     }
 }
 
-@media screen and (max-width: 768px)
-{
-    .motor-page{
-        align-items: center;
+@media screen and (max-width: 768px) {
+    .motor-page {
+        align-items: center; /* Center-align items on small screens */
     }
+}
+
+.modal-add {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Optional: Add a backdrop for the modal */
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Styling for the modal content */
+.modal-content {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 80vh; /* Limit the height of the modal */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-width: 600px; /* Optional: Adjust the max width */
+    width: 100%; /* Full width of the container */
+
+}
+
+/* Adjusting the padding and spacing for modal content */
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Styling for buttons within the modal */
+.modal-content .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+}
+
+.modal-content .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.modal-content .btn-secondary {
+    background-color: #d1d5db;
+    color: #374151;
+}
+
+/* Additional styling for table container */
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Horizontal scrolling if needed */
+    max-height: 500px; /* Optional: Max height to constrain table size */
+}
+
+.table-container table {
+    width: 120%; /* Ensure table width matches container width */
+    min-width: 800px; /* Adjust based on table content */
 }
