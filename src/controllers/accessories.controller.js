@@ -50,6 +50,18 @@ class MotorController {
         }
     };
 
+    getAllAccessoriesDetail = async (req, res, next) => {
+        try {
+            const accessories = await AccessoriesService.getAllAccessoriesDetail();
+            new SuccessResponse({
+                message: 'Get all accessories detail success!',
+                metadata: accessories,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     // Tạo một motor mới
     createAccessories = async (req, res, next) => {
         try {

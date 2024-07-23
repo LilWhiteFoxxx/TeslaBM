@@ -214,6 +214,92 @@ class MotorService {
         return motors;
     };
 
+    static getAllMotorDetail = async () => {
+        const motorDetails = await prisma.motorDetail.findMany({
+            select: {
+                id: true,
+                motor: {
+                    select: {
+                        name: true,
+                        slug: true,
+                        desc: true,
+                        mfg: true,
+                        img: true,
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                color: {
+                    select: {
+                        name: true,
+                        img: true,
+                    },
+                },
+                originalPrice: true,
+                salePrice: true,
+                colorId: true,
+                createdAt: true,
+                inventories: {
+                    select: {
+                        stock: true,
+                    },
+                },
+            },
+        });
+
+        if (!motorDetails.length) {
+            throw new BadRequestError('No motors found!');
+        }
+
+        const motorIds = motorDetails.map((detail) => detail.motorId);
+
+        // let images = [];
+        // if (motorIds.length) {
+        //     images = await prisma.images.findMany({
+        //         where: {
+        //             motorId: {
+        //                 in: motorIds || null,
+        //             },
+        //         },
+        //     });
+        // }
+
+        const motors = motorDetails.map((detail) => {
+            const inventory = detail.inventories[0] || { stock: 0 };
+
+            return {
+                id: detail.id,
+                motorId: detail.motorId,
+                name: detail.motor.name,
+                slug: detail.motor.slug,
+                desc: detail.motor.desc,
+                mfg: detail.motor.mfg,
+                img: detail.motor.img,
+                categoryId: detail.motor.category.id,
+                categoryName: detail.motor.category.name,
+                originalPrice: detail.originalPrice,
+                salePrice: detail.salePrice,
+                colorId: detail.colorId,
+                color: detail.color.name,
+                colorImage: detail.color.img,
+                quantity: inventory.stock,
+                createdAt: detail.createdAt,
+                // images: images
+                //     .filter((image) => image.motorId === detail.motorId)
+                //     .map((image) => ({
+                //         id: image.id,
+                //         path: image.path,
+                //     })),
+            };
+        });
+
+        return motors;
+    };
+
     // Tạo một motor mới
     static createMotor = async (
         name,
@@ -259,16 +345,16 @@ class MotorService {
             const motorD = await prisma.motorDetail.create({
                 data: {
                     motorId: newMotor.id,
-                    originalPrice: detail.originalPrice,
-                    salePrice: detail.salePrice,
-                    colorId: detail.colorId,
+                    originalPrice: +detail.originalPrice,
+                    salePrice: +detail.salePrice,
+                    colorId: Number(detail.colorId),
                 },
             });
 
             await prisma.inventories.create({
                 data: {
                     motorDetailId: motorD.id,
-                    stock: detail.quantity,
+                    stock: Number(detail.quantity),
                 },
             });
         }
@@ -343,10 +429,13 @@ class MotorService {
         ) {
             throw new BadRequestError('Required!');
         }
-    
+
         try {
-            const slug = slugify(name + ' ' + mfg, { lower: true, strict: true });
-    
+            const slug = slugify(name + ' ' + mfg, {
+                lower: true,
+                strict: true,
+            });
+
             // Create the motor
             const newMotor = await prisma.motor.create({
                 data: {
@@ -360,26 +449,26 @@ class MotorService {
                     mfg,
                 },
             });
-    
+
             // Create motor details if provided
             for (const detail of motorDetails) {
                 const motorD = await prisma.motorDetail.create({
                     data: {
                         motorId: newMotor.id,
-                        originalPrice: detail.originalPrice,
-                        salePrice: detail.salePrice,
-                        colorId: detail.colorId,
+                        originalPrice: Number(detail.originalPrice),
+                        salePrice: Number(detail.salePrice),
+                        colorId: Number(detail.colorId),
                     },
                 });
-    
+
                 await prisma.inventories.create({
                     data: {
                         motorDetailId: motorD.id,
-                        stock: detail.quantity,
+                        stock: Number(detail.quantity),
                     },
                 });
             }
-    
+
             // Create images if provided
             for (const image of images) {
                 await prisma.images.create({
@@ -389,7 +478,7 @@ class MotorService {
                     },
                 });
             }
-    
+
             const motorWithDetails = await prisma.motor.findUnique({
                 where: { id: newMotor.id },
                 select: {
@@ -424,7 +513,7 @@ class MotorService {
                     },
                 },
             });
-    
+
             return motorWithDetails;
         } catch (error) {
             // Handle error appropriately
@@ -432,7 +521,6 @@ class MotorService {
             throw new Error('Failed to create motor');
         }
     };
-    
 
     static updateMotor = async (
         id,
@@ -492,33 +580,38 @@ class MotorService {
     };
 
     static deleteMotor = async (id) => {
-        // Tìm motor để kiểm tra sự tồn tại của nó
-        const motor = await prisma.motor.findUnique({
-            where: { id },
-            include: {
-                motorDetail: true, // Bao gồm chi tiết motor để xóa các chi tiết motor liên quan
-                images: true, // Bao gồm hình ảnh để xóa các hình ảnh liên quan
-            },
-        });
-
-        if (!motor) {
-            throw new BadRequestError('Motor not found!');
+        if (!id) {
+            throw new BadRequestError('ID is required');
         }
 
-        // Xóa tất cả các chi tiết motor liên quan
-        await prisma.motorDetail.deleteMany({
-            where: { motorId: id },
-        });
-
-        // Xóa tất cả các hình ảnh liên quan
-        await prisma.images.deleteMany({
-            where: { motorId: id },
-        });
-
-        // Xóa motor
-        await prisma.motor.delete({
+        // Tìm thông tin chi tiết của motor
+        const motorDetail = await prisma.motorDetail.findUnique({
             where: { id },
         });
+
+        if (!motorDetail) {
+            throw new BadRequestError('MotorDetail not found');
+        }
+
+        // Xóa chi tiết motor
+        await prisma.motorDetail.delete({
+            where: { id },
+        });
+
+        // Kiểm tra còn chi tiết nào khác cho motor không
+        const remainingDetails = await prisma.motorDetail.findMany({
+            where: { motorId: motorDetail.motorId },
+        });
+
+        // Nếu không còn chi tiết nào, xóa motor và hình ảnh liên quan
+        if (remainingDetails.length === 0) {
+            await prisma.motor.delete({
+                where: { id: motorDetail.motorId },
+            });
+            await prisma.images.deleteMany({
+                where: { motorId: motorDetail.motorId },
+            });
+        }
 
         return { message: 'Motor deleted successfully!' };
     };

@@ -156,6 +156,8 @@ model motor {
   categoryId    Int
   img           String?       @db.VarChar(255)
   imgHover      String?       @db.VarChar(255)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
   category      category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   motorDetail   motorDetail[]
   accessories   accessories[]
@@ -169,6 +171,8 @@ model motorDetail {
   salePrice     Int
   motorId       Int
   colorId       Int?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
   cartItem      cartItem[]
   orderLine     orderLine[]
   motor         motor?        @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -203,6 +207,8 @@ model accessories {
   img               String?             @db.VarChar(255)
   imgHover          String?             @db.VarChar(255)
   motorId           Int
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime?           @updatedAt
   motor             motor?              @relation(fields: [motorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   images            images[]
   accessoriesDetail accessoriesDetail[]
@@ -214,6 +220,8 @@ model accessoriesDetail {
   salePrice     Int
   accessoriesId Int
   colorId       Int?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
   color         color?        @relation(fields: [colorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accessories   accessories?  @relation(fields: [accessoriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   inventories   inventories[]

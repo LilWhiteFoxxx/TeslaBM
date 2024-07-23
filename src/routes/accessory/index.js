@@ -7,6 +7,7 @@ const { asyncHandler } = require('../../helpers')
 
 
 router.get('/category', asyncHandler(accessoriesController.getAllMotorByCategory))
+router.get('/allaccessoriesdetail', asyncHandler(accessoriesController.getAllAccessoriesDetail));
 router.get('/:id', asyncHandler(accessoriesController.getAccessoriesDetail));
 router.get('', asyncHandler(accessoriesController.getAllAcessories));
 

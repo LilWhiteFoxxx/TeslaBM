@@ -174,6 +174,92 @@ class AccessoriesService {
         return accessoriesReal;
     };
 
+    static getAllAccessoriesDetail = async () => {
+        const accessoriesDetails = await prisma.accessoriesDetail.findMany({
+            select: {
+                id: true,
+                accessories: {
+                    select: {
+                        name: true,
+                        slug: true,
+                        desc: true,
+                        mfg: true,
+                        img: true,
+                        motor: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                color: {
+                    select: {
+                        name: true,
+                        img: true,
+                    },
+                },
+                originalPrice: true,
+                salePrice: true,
+                colorId: true,
+                createdAt: true,
+                inventories: {
+                    select: {
+                        stock: true,
+                    },
+                },
+            },
+        });
+
+        if (!accessoriesDetails.length) {
+            throw new BadRequestError('No motors found!');
+        }
+
+        const accessoriesIds = accessoriesDetails.map((detail) => detail.accessoriesId);
+
+        // let images = [];
+        // if (accessoriesIds.length) {
+        //     images = await prisma.images.findMany({
+        //         where: {
+        //             motorId: {
+        //                 in: accessoriesIds || null,
+        //             },
+        //         },
+        //     });
+        // }
+
+        const ac = accessoriesDetails.map((detail) => {
+            const inventory = detail.inventories[0] || { stock: 0 };
+
+            return {
+                id: detail.id,
+                accessoriesId: detail.accessoriesId,
+                name: detail.accessories.name,
+                slug: detail.accessories.slug,
+                desc: detail.accessories.desc,
+                mfg: detail.accessories.mfg,
+                img: detail.accessories.img,
+                categoryId: detail.accessories.motor.id,
+                categoryName: detail.accessories.motor.name,
+                originalPrice: detail.originalPrice,
+                salePrice: detail.salePrice,
+                colorId: detail?.colorId,
+                color: detail?.color?.name,
+                colorImage: detail?.color?.img,
+                quantity: inventory.stock,
+                createdAt: detail.createdAt,
+                // images: images
+                //     .filter((image) => image.motorId === detail.motorId)
+                //     .map((image) => ({
+                //         id: image.id,
+                //         path: image.path,
+                //     })),
+            };
+        });
+
+        return ac;
+    };
+
     // Tạo một accessories mới
     static createAccessories = async (
         name,

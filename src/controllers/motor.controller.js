@@ -34,6 +34,18 @@ class MotorController {
         }
     };
 
+    getAllMotorDetail = async (req, res, next) => {
+        try {
+            const motors = await MotorService.getAllMotorDetail();
+            new SuccessResponse({
+                message: 'Get all motor detail success!',
+                metadata: motors,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     getAllMotor = async (req, res, next) => {
         try {
             const { limit, offset } = req.query;
