@@ -22,3 +22,14 @@
         align-items: center;
     }
 }
+
+.order-container {
+    width: 100%;
+    overflow-x: auto; /* Horizontal scrolling if needed */
+    max-height: 500px; /* Optional: Max height to constrain table size */
+}
+
+.order-container table {
+    width: 100%; /* Ensure table width matches container width */
+    min-width: 800px; /* Adjust based on table content */
+}
