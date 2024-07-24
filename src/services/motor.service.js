@@ -19,6 +19,7 @@ class MotorService {
                 mfg: true,
                 img: true,
                 imgHover: true,
+                dataAndEquipment: true,
                 category: {
                     select: { name: true },
                 },
@@ -77,6 +78,7 @@ class MotorService {
                     itemPrice: motor.originalPrice,
                     slug: motor.slug,
                     desc: motor.desc,
+                    dataAndEquipment: motor.dataAndEquipment,
                     subCategory: motor.category.name, // Adjust this field if necessary
                     category: 'motors',
                     stockStatus, // Set stockStatus based on inventories

@@ -3,6 +3,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Load Stripe secret key from environment variables
 const { BadRequestError } = require('../core/error.response');
 const prisma = require('../dbs/db');
+const CartService = require('./cart.service');
 const OrderService = require('./order.service');
 
 class PaymentService {
@@ -36,6 +37,9 @@ class PaymentService {
         try {
             // Create order in the database
             order = await OrderService.createOrder(userId, products, 2);
+            if (order) {
+                await CartService.deleteCart(userId);
+            }
         } catch (error) {
             throw new Error(`Failed to create order: ${error.message}`);
         }

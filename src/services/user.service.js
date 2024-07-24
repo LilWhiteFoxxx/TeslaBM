@@ -18,8 +18,6 @@ class UserService {
             throw new BadRequestError('User not found!');
         }
 
-        console.log(user);
-
         return user
     }
 

@@ -147,21 +147,22 @@ model category {
 }
 
 model motor {
-  id            Int           @id @default(autoincrement())
-  name          String        @db.VarChar(100)
-  slug          String        @db.VarChar(255)
-  desc          String        @db.VarChar(255)
-  originalPrice Int
-  mfg           String        @db.VarChar(4)
-  categoryId    Int
-  img           String?       @db.VarChar(255)
-  imgHover      String?       @db.VarChar(255)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime?     @updatedAt
-  category      category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  motorDetail   motorDetail[]
-  accessories   accessories[]
-  images        images[]
+  id               Int           @id @default(autoincrement())
+  name             String        @db.VarChar(100)
+  slug             String        @db.VarChar(255)
+  desc             String        @db.VarChar(255)
+  originalPrice    Int
+  mfg              String        @db.VarChar(4)
+  categoryId       Int
+  img              String?       @db.VarChar(255)
+  imgHover         String?       @db.VarChar(255)
+  dataAndEquipment Json?         @db.Json
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime?     @updatedAt
+  category         category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  motorDetail      motorDetail[]
+  accessories      accessories[]
+  images           images[]
 }
 
 //  abc
