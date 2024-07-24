@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -155,13 +154,13 @@ export default function Invoice() {
                                     {item?.motor?.name ||
                                         item?.accessories?.name}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-5 py-2 text-sm text-start">
                                     {item.quantity}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-4 py-2 text-sm text-start">
                                     ${item.price}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-4 py-2 text-sm text-start">
                                     ${item.price * item.quantity}
                                 </td>
                             </tr>

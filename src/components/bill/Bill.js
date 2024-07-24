@@ -149,13 +149,13 @@ export default function Bill() {
                                     {item?.motor?.name ||
                                         item?.accessories?.name}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-5 py-2 text-sm text-start">
                                     {item.quantity}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-4 py-2 text-sm text-start">
                                     ${item.price}
                                 </td>
-                                <td className="border-b px-4 py-2 text-sm">
+                                <td className="border-b px-4 py-2 text-sm text-start">
                                     ${item.price * item.quantity}
                                 </td>
                             </tr>

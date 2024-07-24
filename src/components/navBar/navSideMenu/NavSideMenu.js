@@ -202,6 +202,7 @@ export default function NavSideMenu({
     const [inputValue, setInputValue] = useState('');
     // const [showSubCategories, setShowSubCategories] = useState(false);
     // const [subCategories, setSubCategories] = useState([]);
+    
 
     const handleSubmit = (e) => {
         if (e.keyCode === 13) {
