@@ -8,7 +8,7 @@
     }
 }
 
-.product-detail-component{
+.product-detail-component {
     min-height: 100vh;
 }
 
@@ -36,4 +36,15 @@
         align-items: center;
         justify-content: center;
     }
+}
+
+.animatedfacts__circleLeft .animatedfacts__circleRight {
+    display: block; /* Đảm bảo SVG được hiển thị */
+    margin: 0 auto; /* Căn giữa nếu cần */
+}
+
+.animatedfacts__circleLine {
+    stroke: gray; /* Màu của đường kẻ */
+    stroke-width: 2; /* Độ dày của đường kẻ */
+    fill: none; /* Không tô màu bên trong các đường */
 }
