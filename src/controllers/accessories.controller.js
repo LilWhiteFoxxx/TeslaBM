@@ -24,7 +24,9 @@ class MotorController {
     getAccessoriesDetail = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const accessories = await AccessoriesService.getAccessoriesDetail(parseInt(id));
+            const accessories = await AccessoriesService.getAccessoriesDetail(
+                parseInt(id)
+            );
             new SuccessResponse({
                 message: 'Get accessories detail success!',
                 metadata: accessories,
@@ -52,7 +54,8 @@ class MotorController {
 
     getAllAccessoriesDetail = async (req, res, next) => {
         try {
-            const accessories = await AccessoriesService.getAllAccessoriesDetail();
+            const accessories =
+                await AccessoriesService.getAllAccessoriesDetail();
             new SuccessResponse({
                 message: 'Get all accessories detail success!',
                 metadata: accessories,
@@ -78,10 +81,16 @@ class MotorController {
             } = req.body;
 
             // Kiểm tra các thông tin cần thiết
-            if (!name || !desc || !originalPrice || !motorId || !mfg || !accessoriesDetails || !images) {
-                throw new BadRequestError(
-                    'Required!'
-                );
+            if (
+                !name ||
+                !desc ||
+                !originalPrice ||
+                !motorId ||
+                !mfg ||
+                !accessoriesDetails ||
+                !images
+            ) {
+                throw new BadRequestError('Required!');
             }
 
             const newAcessories = await AccessoriesService.createAccessories(
@@ -144,7 +153,7 @@ class MotorController {
         }
     };
 
-    deleteMotor = async (req, res, next) => {
+    deleteAccessories = async (req, res, next) => {
         try {
             const { id } = req.params;
 
@@ -153,9 +162,9 @@ class MotorController {
                 throw new BadRequestError('Motor ID must be a number!');
             }
 
-            await AccessoriesService.deleteMotor(motorId);
+            await AccessoriesService.deleteAccessories(motorId);
             new SuccessResponse({
-                message: 'Motor deleted successfully!',
+                message: 'Accessories deleted successfully!',
             }).send(res);
         } catch (error) {
             next(error);

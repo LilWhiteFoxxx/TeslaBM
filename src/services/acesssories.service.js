@@ -38,7 +38,7 @@ class AccessoriesService {
                             color: {
                                 select: {
                                     name: true,
-                                    img: true
+                                    img: true,
                                 },
                             },
                         },
@@ -215,7 +215,9 @@ class AccessoriesService {
             throw new BadRequestError('No motors found!');
         }
 
-        const accessoriesIds = accessoriesDetails.map((detail) => detail.accessoriesId);
+        const accessoriesIds = accessoriesDetails.map(
+            (detail) => detail.accessoriesId
+        );
 
         // let images = [];
         // if (accessoriesIds.length) {
@@ -305,16 +307,16 @@ class AccessoriesService {
             const accessoriesD = await prisma.accessoriesDetail.create({
                 data: {
                     accessoriesId: newAcessories.id,
-                    originalPrice: detail.originalPrice,
-                    salePrice: detail.salePrice,
-                    colorId: detail.colorId,
+                    originalPrice: Number(detail.originalPrice),
+                    salePrice: Number(detail.salePrice),
+                    colorId: detail.colorId ? Number(detail.colorId) : null,
                 },
             });
 
             await prisma.inventories.create({
                 data: {
                     accessoriesDetailId: accessoriesD.id,
-                    stock: detail.quantity,
+                    stock: Number(detail.quantity),
                 },
             });
         }
@@ -425,33 +427,38 @@ class AccessoriesService {
     };
 
     static deleteAccessories = async (id) => {
-        // Tìm accessories để kiểm tra sự tồn tại của nó
-        const accessories = await prisma.accessories.findUnique({
-            where: { id },
-            include: {
-                accessoriesDetail: true, // Bao gồm chi tiết accessories để xóa các chi tiết accessories liên quan
-                images: true, // Bao gồm hình ảnh để xóa các hình ảnh liên quan
-            },
-        });
-
-        if (!accessories) {
-            throw new BadRequestError('Accessories not found!');
+        if (!id) {
+            throw new BadRequestError('ID is required');
         }
 
-        // Xóa tất cả các chi tiết accessories liên quan
-        await prisma.accessoriesDetail.deleteMany({
-            where: { accessoriesId: id },
-        });
-
-        // Xóa tất cả các hình ảnh liên quan
-        await prisma.images.deleteMany({
-            where: { accessoriesId: id },
-        });
-
-        // Xóa accessories
-        await prisma.accessories.delete({
+        // Tìm thông tin chi tiết của motor
+        const accessoriesDetail = await prisma.accessoriesDetail.findUnique({
             where: { id },
         });
+
+        if (!accessoriesDetail) {
+            throw new BadRequestError('accessoriesDetail not found');
+        }
+
+        // Xóa chi tiết accessories
+        await prisma.accessoriesDetail.delete({
+            where: { id },
+        });
+
+        // Kiểm tra còn chi tiết nào khác cho accessories không
+        const remainingDetails = await prisma.accessoriesDetail.findMany({
+            where: { accessoriesId: accessoriesDetail.accessoriesId },
+        });
+
+        // Nếu không còn chi tiết nào, xóa accessories và hình ảnh liên quan
+        if (remainingDetails.length === 0) {
+            await prisma.accessories.delete({
+                where: { id: accessoriesDetail.accessoriesId },
+            });
+            await prisma.images.deleteMany({
+                where: { accessoriesId: accessoriesDetail.accessoriesId },
+            });
+        }
 
         return { message: 'Accessories deleted successfully!' };
     };
