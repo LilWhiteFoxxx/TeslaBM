@@ -48,3 +48,25 @@
     stroke-width: 2; /* Độ dày của đường kẻ */
     fill: none; /* Không tô màu bên trong các đường */
 }
+
+.pulsing-circle {
+    @apply absolute rounded-full bg-blue-500;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* In your CSS file or as inline styles in the component */
