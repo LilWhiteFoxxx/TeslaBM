@@ -6,6 +6,8 @@ const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 const { authentication } = require('../../auth/authUtils')
 
+router.use(express.json());
+
 // SignUp
 router.post('/register', asyncHandler(accessController.register))
 router.get('/verifyemail', asyncHandler(accessController.verifyEmail));

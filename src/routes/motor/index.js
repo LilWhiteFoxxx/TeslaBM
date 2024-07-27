@@ -5,6 +5,8 @@ const motorController = require('../../controllers/motor.controller')
 const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 
+router.use(express.json());
+
 
 router.get('/category', asyncHandler(motorController.getAllMotorByCategory))
 router.get('/allmotordetail', asyncHandler(motorController.getAllMotorDetail));

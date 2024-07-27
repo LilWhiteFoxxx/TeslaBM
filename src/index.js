@@ -15,7 +15,7 @@ dotenv.config();
 // init middleware
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(express.json());
+// app.use(express.json());
 app.use(compression());
 app.use(
     express.urlencoded({

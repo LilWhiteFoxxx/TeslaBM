@@ -77,6 +77,87 @@ class OrderController {
             next(error);
         }
     };
+
+    getTotalSales = async (req, res, next) => {
+        try {
+            const { startdate, enddate } = req.query;
+            const totalSales = await OrderService.getTotalSales(
+                startdate,
+                enddate
+            );
+            new SuccessResponse({
+                message: 'Get total sales success!',
+                metadata: { totalSales },
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getTotalOrders = async (req, res, next) => {
+        try {
+            const { startdate, enddate } = req.query;
+            const totalOrders = await OrderService.getTotalOrders(
+                startdate,
+                enddate
+            );
+            new SuccessResponse({
+                message: 'Get total orders success!',
+                metadata: { totalOrders },
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getAverageOrderValue = async (req, res, next) => {
+        try {
+            const { startdate, enddate } = req.query;
+            const averageOrderValue = await OrderService.getAverageOrderValue(
+                startdate,
+                enddate
+            );
+            new SuccessResponse({
+                message: 'Get average order value success!',
+                metadata: { averageOrderValue },
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getTopSellingProducts = async (req, res, next) => {
+        try {
+            const { startdate, enddate } = req.query;
+            const topSellingProducts = await OrderService.getTopSellingProducts(
+                startdate,
+                enddate
+            );
+            new SuccessResponse({
+                message: 'Get top selling products success!',
+                metadata: topSellingProducts,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getOrderStatisticsByStatus = async (req, res, next) => {
+        try {
+            const { startdate, enddate } = req.query;
+            const orderStatisticsByStatus =
+                await OrderService.getOrderStatisticsByStatus(
+                    startdate,
+                    enddate
+                );
+            new SuccessResponse({
+                message: 'Get order statistics by status success!',
+                metadata: orderStatisticsByStatus,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 module.exports = new OrderController();

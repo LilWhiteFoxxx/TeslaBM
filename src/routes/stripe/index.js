@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post(
     '/webhook',
-    express.raw({ type: 'application/json' }), // Stripe requires raw body for webhook signatures
+    express.raw({ type: 'application/json' }),
     asyncHandler(stripeController.handleWebhook.bind(stripeController))
 );
 

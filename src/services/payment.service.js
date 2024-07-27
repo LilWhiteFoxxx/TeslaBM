@@ -37,9 +37,9 @@ class PaymentService {
         try {
             // Create order in the database
             order = await OrderService.createOrder(userId, products, 2);
-            if (order) {
-                await CartService.deleteCart(userId);
-            }
+            // if (order) {
+            //     await CartService.deleteCart(userId);
+            // }
         } catch (error) {
             throw new Error(`Failed to create order: ${error.message}`);
         }
@@ -52,6 +52,10 @@ class PaymentService {
                 mode: 'payment', // Specify the mode of the session (e.g., 'payment', 'subscription')
                 success_url: `http://localhost:3000/groupproject/invoicer/${order.id}`,
                 cancel_url: `http://localhost:3000/groupproject/error`,
+                metadata: {
+                    orderId: order.id,
+                    userId: userId,
+                },
             });
 
             return session;

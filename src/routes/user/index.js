@@ -6,6 +6,9 @@ const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 const { authentication } = require('../../auth/authUtils')
 
+router.use(express.json());
+
+
 
 // Authentication
 router.use(authentication)

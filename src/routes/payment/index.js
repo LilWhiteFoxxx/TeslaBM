@@ -5,6 +5,8 @@ const PaymentController = require('../../controllers/payment.controller');
 const router = express.Router();
 const { asyncHandler } = require('../../helpers');
 
+router.use(express.json());
+
 router.post(
     '/create-checkout-session',
     asyncHandler(PaymentController.createCheckoutSession)

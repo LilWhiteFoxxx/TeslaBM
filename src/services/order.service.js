@@ -300,13 +300,12 @@ class OrderService {
         return updatedOrder;
     }
 
-    // Get orders by user ID
     static async getOrdersByUserId(userId) {
         if (!userId) {
             throw new BadRequestError('User ID is required');
         }
 
-        // Find orders for the user
+        // Find orders for the user, sorted by createdAt in descending order
         const orders = await prisma.order.findMany({
             where: { userId },
             include: {
@@ -319,6 +318,9 @@ class OrderService {
                 paymentMethod: true,
                 address: true,
                 orderStatus: true,
+            },
+            orderBy: {
+                createdAt: 'desc', // Sort by createdAt in descending order
             },
         });
 
@@ -459,6 +461,118 @@ class OrderService {
         }));
 
         return flattenedOrders;
+    }
+
+    // Get total sales amount
+    static async getTotalSales(startDate, endDate) {
+        if (!startDate || !endDate) {
+            throw new BadRequestError('Start date and end date are required');
+        }
+
+        const totalSales = await prisma.order.aggregate({
+            where: {
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+            _sum: {
+                total: true,
+            },
+        });
+
+        return totalSales._sum.total || 0;
+    }
+
+    // Get total number of orders
+    static async getTotalOrders(startDate, endDate) {
+        if (!startDate || !endDate) {
+            throw new BadRequestError('Start date and end date are required');
+        }
+
+        const totalOrders = await prisma.order.count({
+            where: {
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+        });
+
+        return totalOrders;
+    }
+
+    // Get average order value
+    static async getAverageOrderValue(startDate, endDate) {
+        if (!startDate || !endDate) {
+            throw new BadRequestError('Start date and end date are required');
+        }
+
+        const { _avg } = await prisma.order.aggregate({
+            where: {
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+            _avg: {
+                total: true,
+            },
+        });
+
+        return _avg.total || 0;
+    }
+
+    // Get top-selling products
+    static async getTopSellingProducts(startDate, endDate) {
+        if (!startDate || !endDate) {
+            throw new BadRequestError('Start date and end date are required');
+        }
+
+        const topSellingProducts = await prisma.orderLine.groupBy({
+            by: ['motorDetailId', 'accessoriesDetailId'],
+            _sum: {
+                quantity: true,
+            },
+            where: {
+                order: {
+                    createdAt: {
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
+                    },
+                },
+            },
+            orderBy: {
+                _sum: {
+                    quantity: 'desc',
+                },
+            },
+            take: 10, // Top 10 products
+        });
+
+        return topSellingProducts;
+    }
+
+    // Get order statistics by status
+    static async getOrderStatisticsByStatus(startDate, endDate) {
+        if (!startDate || !endDate) {
+            throw new BadRequestError('Start date and end date are required');
+        }
+
+        const statistics = await prisma.order.groupBy({
+            by: ['orderStatusId'],
+            _count: {
+                id: true,
+            },
+            where: {
+                createdAt: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate),
+                },
+            },
+        });
+
+        return statistics;
     }
 }
 

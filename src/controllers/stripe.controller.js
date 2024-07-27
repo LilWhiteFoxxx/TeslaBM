@@ -5,8 +5,7 @@ const { SuccessResponse } = require('../core/success.response');
 
 class StripeController {
     async handleWebhook(req, res, next) {
-        const sig = req.headers['HTTP_STRIPE_SIGNATURE'];
-
+        const sig = req.headers["stripe-signature"];
         try {
             await StripeService.processEvent(req.body, sig);
             new SuccessResponse({
