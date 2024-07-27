@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import PersonIcon from '@mui/icons-material/Person';
@@ -17,20 +17,36 @@ import './sidebar.scss';
 
 function Sidebar() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useSelector((state) => state.auth);
-    const [activeItem, setActiveItem] = useState('Personal Information');
+    const [activeItem, setActiveItem] = useState('');
 
-    const handleItemClick = (title) => {
+    useEffect(() => {
+        // Map paths to sidebar items
+        const pathMap = {
+            '/groupproject/profile/wallet': 'My Wallet',
+            '/groupproject/profile/myorders': 'My Orders',
+            '/groupproject/profile': 'Personal Information',
+            '/groupproject/profile/addresses': 'Addresses',
+            '/groupproject/profile/paymentmethods': 'Payment Methods',
+            '/groupproject/profile/help': 'Need Help',
+            '/groupproject': 'Sign Out'
+        };
+
+        // Set the active item based on the current pathname
+        const currentPath = location.pathname;
+        setActiveItem(pathMap[currentPath] || 'Personal Information');
+    }, [location.pathname]);
+
+    const handleItemClick = (title, path) => {
         setActiveItem(title);
+        navigate(path);
     };
 
     return (
         <div className="sidebar-container">
             <div className="profile flex flex-col justify-center items-center bg-white w-full py-4">
-                <img
-                    src={user?.avatar}
-                    alt="Profile"
-                />
+                <img src={user?.avatar} alt="Profile" />
                 <h2 className="my-2 font-bold">{user?.username}</h2>
                 <p>38.00$</p>
             </div>
@@ -45,20 +61,17 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => {
-                                handleItemClick('My Wallet');
-                                navigate('/groupproject/profile/wallet');
-                            }}
+                            onClick={() => handleItemClick('My Wallet', '/groupproject/profile/wallet')}
                         />
                         <ItemMenu
                             title={'My Rewards'}
                             icon={<EmojiEventsIcon />}
                             className={
-                                activeItem === 'Rewards'
+                                activeItem === 'My Rewards'
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => handleItemClick('Rewards')}
+                            onClick={() => handleItemClick('My Rewards', '/groupproject/profile/rewards')}
                         />
                         <ItemMenu
                             title={'My Orders'}
@@ -68,7 +81,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => handleItemClick('My Orders')}
+                            onClick={() => handleItemClick('My Orders', '/groupproject/profile/myorders')}
                         />
                         <ItemMenu
                             title={'Personal Information'}
@@ -78,10 +91,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => {
-                                handleItemClick('Personal Information');
-                                navigate('/groupproject/profile');
-                            }}
+                            onClick={() => handleItemClick('Personal Information', '/groupproject/profile')}
                         />
                         <ItemMenu
                             title={'Addresses'}
@@ -91,7 +101,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => handleItemClick('Addresses')}
+                            onClick={() => handleItemClick('Addresses', '/groupproject/profile/addresses')}
                         />
                         <ItemMenu
                             title={'Payment Methods'}
@@ -101,7 +111,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => handleItemClick('Payment Methods')}
+                            onClick={() => handleItemClick('Payment Methods', '/groupproject/profile/paymentmethods')}
                         />
                         <ItemMenu
                             title={'Need Help'}
@@ -111,7 +121,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => handleItemClick('Need Help')}
+                            onClick={() => handleItemClick('Need Help', '/groupproject/profile/help')}
                         />
                         <ItemMenu
                             title={'Sign Out'}
@@ -121,10 +131,7 @@ function Sidebar() {
                                     ? 'item-menu active'
                                     : 'item-menu'
                             }
-                            onClick={() => {
-                                handleItemClick('Sign Out');
-                                navigate('/groupproject')
-                            }}
+                            onClick={() => handleItemClick('Sign Out', '/groupproject')}
                         />
                     </ul>
                 </nav>

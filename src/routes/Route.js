@@ -20,6 +20,7 @@ import Bill from '../components/bill/Bill';
 import Success from '../pages/checkout/Success';
 import Error from '../pages/checkout/Error';
 import Invoice from '../components/bill/Invoice';
+import MyOrder from '../components/profile/MyOrder';
 
 export default function MyRouter() {
     return (
@@ -87,6 +88,10 @@ export default function MyRouter() {
                     <Route
                         path="/groupproject/profile/wallet"
                         element={<Wallet />}
+                    />
+                    <Route
+                        path="/groupproject/profile/myorders"
+                        element={<MyOrder />}
                     />
                 </Route>
                 <Route
