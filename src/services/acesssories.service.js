@@ -326,7 +326,7 @@ class AccessoriesService {
             await prisma.images.create({
                 data: {
                     accessoriesId: newAcessories.id,
-                    ...image,
+                    path: image,
                 },
             });
         }

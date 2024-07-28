@@ -5,8 +5,6 @@ const accessoriesController = require('../../controllers/accessories.controller'
 const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 
-router.use(express.json());
-
 router.get('/category', asyncHandler(accessoriesController.getAllMotorByCategory))
 router.get('/allaccessoriesdetail', asyncHandler(accessoriesController.getAllAccessoriesDetail));
 router.get('/:id', asyncHandler(accessoriesController.getAccessoriesDetail));

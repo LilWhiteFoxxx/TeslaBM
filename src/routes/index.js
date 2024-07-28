@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/api/v1/stripe', require('./stripe'));
+router.use('/api/v1/colors', require('./color'));
 router.use('/api/v1/categories', require('./category'));
 router.use('/api/v1/accessories', require('./accessory'));
 router.use('/api/v1/motors', require('./motor'));

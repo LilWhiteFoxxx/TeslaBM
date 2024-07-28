@@ -16,6 +16,15 @@ dotenv.config();
 app.use(morgan('dev'));
 app.use(helmet());
 // app.use(express.json());
+app.use(
+    express.json({
+        verify: (req, res, buf) => {
+            if (req.originalUrl.startsWith('/api/v1/stripe/webhook')) {
+                req.rawBody = buf.toString();
+            }
+        },
+    })
+);
 app.use(compression());
 app.use(
     express.urlencoded({

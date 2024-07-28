@@ -5,8 +5,6 @@ const orderController = require('../../controllers/order.controller');
 const router = express.Router();
 const { asyncHandler } = require('../../helpers');
 
-router.use(express.json());
-
 router.get(
     '/orderstatisticsbystatus',
     asyncHandler(orderController.getOrderStatisticsByStatus)

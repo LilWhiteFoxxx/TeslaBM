@@ -366,7 +366,7 @@ class MotorService {
             await prisma.images.create({
                 data: {
                     motorId: newMotor.id,
-                    ...image,
+                    path: image,
                 },
             });
         }
@@ -476,7 +476,7 @@ class MotorService {
                 await prisma.images.create({
                     data: {
                         motorId: newMotor.id,
-                        ...image,
+                        path: image,
                     },
                 });
             }

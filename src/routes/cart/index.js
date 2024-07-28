@@ -5,8 +5,6 @@ const cartController = require('../../controllers/cart.controller')
 const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 
-router.use(express.json());
-
 router.get('', asyncHandler(cartController.getAllCart));
 router.post('/addtocart', asyncHandler(cartController.addToCart));
 router.put('/updatecartitem', asyncHandler(cartController.updateCartItem));

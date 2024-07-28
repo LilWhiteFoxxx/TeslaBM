@@ -5,8 +5,6 @@ const categoryController = require('../../controllers/category.controller')
 const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 
-router.use(express.json());
-
 router.get('', asyncHandler(categoryController.getAllCategory));
 router.get('/accessories', asyncHandler(categoryController.getAllCategoryOfAccessories));
 router.post('', asyncHandler(categoryController.createCategory));

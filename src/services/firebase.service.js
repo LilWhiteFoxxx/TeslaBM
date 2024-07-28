@@ -3,62 +3,57 @@
 const { bucket } = require('../configs/firebase.config');
 
 class FirebaseService {
-  static uploadFile = async (file, folder = 'ImageApp') => {
-    return new Promise((resolve, reject) => {
-      const filePath = folder ? `${folder}/${file.originalname}` : file.originalname;
-      const blob = bucket.file(filePath);
-      const blobStream = blob.createWriteStream({
-        metadata: {
-          contentType: file.mimetype,
-        },
+  // Upload a single file
+  static async uploadFile(file, folder = 'ImageApp') {
+    const filePath = `${folder}/${file.originalname}`;
+    const blob = bucket.file(filePath);
+
+    try {
+      await new Promise((resolve, reject) => {
+        const blobStream = blob.createWriteStream({
+          metadata: {
+            contentType: file.mimetype,
+          },
+        });
+
+        blobStream.on('error', reject);
+        blobStream.on('finish', resolve);
+        blobStream.end(file.buffer);
       });
 
-      blobStream.on('error', (err) => {
-        reject(err);
-      });
+      // Make the file public
+      await blob.makePublic();
 
-      blobStream.on('finish', async () => {
-        try {
-          // Make the file public (optional, depends on your needs)
-          await blob.makePublic();
+      // Construct the public URL
+      const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filePath)}?alt=media`;
 
-          // Get the download URL
-          const [url] = await blob.getSignedUrl({
-            action: 'read',
-            expires: '03-09-2491', // Adjust the expiration date as needed
-          });
-
-          resolve(url);
-        } catch (error) {
-          reject(error);
-        }
-      });
-
-      blobStream.end(file.buffer);
-    });
+      return url;
+    } catch (error) {
+      throw new Error('Error uploading file: ' + error.message);
+    }
   }
 
-  // Method to get download URL of an existing file
-  static getFileDownloadUrl = async (filePath) => {
+  // Get download URL of an existing file
+  static async getFileDownloadUrl(filePath) {
     try {
-      const file = bucket.file(filePath);
-      const [url] = await file.getSignedUrl({
-        action: 'read',
-        expires: '03-09-2491', // Adjust the expiration date as needed
-      });
+      // Construct the public URL
+      const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filePath)}?alt=media`;
       return url;
     } catch (error) {
       throw new Error('Error getting download URL: ' + error.message);
     }
   }
 
-  static uploadFiles = async (files, folder = 'ImageApp') => {
+  // Upload multiple files
+  static async uploadFiles(files, folder = 'ImageApp') {
     if (!files) {
       throw new Error('Files parameter must not be null or undefined.');
     }
+
     if (!Array.isArray(files)) {
       files = [files];
     }
+
     const uploadPromises = files.map(file => this.uploadFile(file, folder));
     return Promise.all(uploadPromises);
   }

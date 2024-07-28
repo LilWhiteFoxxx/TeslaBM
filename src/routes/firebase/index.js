@@ -6,9 +6,6 @@ const FirebaseController = require('../../controllers/firebase.controller')
 const router = express.Router()
 const { asyncHandler } = require('../../helpers')
 
-
-router.use(express.json());
-
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/uploadfirebase', upload.any(), asyncHandler(FirebaseController.uploadToFirebase))
