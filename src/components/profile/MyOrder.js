@@ -99,7 +99,7 @@ function MyOrder() {
                                     {order.id}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${order.total / 100}
+                                    ${order.total.toLocaleString('en-US')}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {order.orderStatus.status}
