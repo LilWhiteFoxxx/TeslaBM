@@ -369,61 +369,75 @@ class AccessoriesService {
         return accessoriesWithDetails;
     };
 
-    static updateMotor = async (
+    static updateAccessories = async (
         id,
         name,
-        desc,
         originalPrice,
-        salePrice,
         categoryId,
-        mfg
+        colorId,
+        mfg,
+        stock
     ) => {
-        const motor = await prisma.motor.findUnique({
-            where: { id },
+        const accessoriesDetail = await prisma.accessoriesDetail.findUnique({
+            where: { id: id },
         });
 
-        const motorDetail = await prisma.motorDetail.findUnique({
-            where: { motorId: id },
-        });
-
-        if (!motor) {
-            throw new BadRequestError('Motor not found!');
+        if (!accessoriesDetail) {
+            throw new BadRequestError('Accessories not found!');
         }
+        const accessories = await prisma.accessories.findUnique({
+            where: { id: accessoriesDetail.accessoriesId },
+        });
+
+        const inventory = await prisma.inventories.findFirst({
+            where: { accessoriesDetailId: accessoriesDetail.id },
+        });
 
         const newSlug = name
             ? slugify(name + ' ' + mfg, { lower: true, strict: true })
-            : motor.slug;
+            : accessories.slug;
 
-        const updatedMotor = await prisma.motor.update({
-            where: { id },
+        const updatedAccessories = await prisma.accessories.update({
+            where: { id: accessories.id },
             data: {
-                name: name || motor.name,
+                name: name || accessories.name,
                 slug: newSlug,
-                desc: desc || motor.desc,
-                originalPrice: originalPrice || motor.originalPrice,
-                categoryId: categoryId || motor.categoryId,
-                mfg: mfg || motor.mfg,
+                // desc: desc || accessories.desc,
+                // originalPrice: originalPrice || accessories.originalPrice,
+                motorId: +categoryId || accessories.motorId,
+                mfg: mfg || accessories.mfg,
             },
         });
 
-        const updatedMotorDetail = await prisma.motor.update({
+        const updatedAccessoriesDetail = await prisma.accessoriesDetail.update({
             where: { id },
             data: {
-                originalPrice: originalPrice || motorDetail.originalPrice,
-                salePrice: salePrice || motorDetail.salePrice,
+                originalPrice:
+                    +originalPrice || accessoriesDetail.originalPrice,
+                salePrice: +originalPrice || accessoriesDetail.salePrice,
+                colorId: +colorId || accessoriesDetail.colorId,
             },
         });
 
-        // Fetch the updated motor with its details
-        const motorWithDetails = await prisma.motor.findUnique({
-            where: { id },
+        const updatedInventories = await prisma.inventories.update({
+            where: { id: inventory.id },
+            data: {
+                stock: +stock || inventory.stock,
+            },
+        });
+
+        // Fetch the updated accessories with its details
+        const accessoriesWithDetails = await prisma.accessories.findUnique({
+            where: { id: accessories.id },
             include: {
-                motorDetails: { include: { color: true } }, // Bao gồm chi tiết motor và màu sắc của nó
-                images: true, // Bao gồm hình ảnh của motor
+                accessoriesDetail: {
+                    include: { color: true, inventories: true },
+                },
+                images: true,
             },
         });
 
-        return motorWithDetails;
+        return accessoriesWithDetails;
     };
 
     static deleteAccessories = async (id) => {

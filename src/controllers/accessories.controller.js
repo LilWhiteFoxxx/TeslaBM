@@ -117,41 +117,39 @@ class MotorController {
         }
     };
 
-    updateMotor = async (req, res, next) => {
+    updateAccessories = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const { name, desc, originalPrice, salePrice, categoryId, mfg } =
+            const { name, originalPrice, categoryId, colorId, mfg, quantity } =
                 req.body;
 
-            const motorId = parseInt(id);
-            const price = parseInt(originalPrice);
-            const priceS = parseInt(salePrice);
-            if (isNaN(motorId)) {
+            const accessoriesId = parseInt(id);
+            if (isNaN(accessoriesId)) {
                 throw new BadRequestError('Motor ID must be a number!');
             }
 
-            const updatedMotor = await AccessoriesService.updateMotor(
-                motorId,
+            const updatedAccessories = await AccessoriesService.updateAccessories(
+                accessoriesId,
                 name,
-                null,
-                desc,
-                price,
-                priceS,
+                originalPrice,
                 categoryId,
-                mfg
+                colorId,
+                mfg,
+                quantity
             );
-            if (!updatedMotor) {
+            if (!updatedAccessories) {
                 throw new BadRequestError('Motor not found!');
             }
 
             new SuccessResponse({
                 message: 'Motor updated successfully!',
-                metadata: updatedMotor,
+                metadata: updatedAccessories,
             }).send(res);
         } catch (error) {
             next(error);
         }
     };
+
 
     deleteAccessories = async (req, res, next) => {
         try {

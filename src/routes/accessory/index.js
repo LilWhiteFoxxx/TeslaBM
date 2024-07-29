@@ -11,7 +11,7 @@ router.get('/:id', asyncHandler(accessoriesController.getAccessoriesDetail));
 router.get('', asyncHandler(accessoriesController.getAllAcessories));
 
 router.post('', asyncHandler(accessoriesController.createAccessories));
-router.put('/:id', asyncHandler(accessoriesController.updateMotor));
+router.put('/:id', asyncHandler(accessoriesController.updateAccessories));
 router.delete('/:id', asyncHandler(accessoriesController.deleteAccessories));
 
 

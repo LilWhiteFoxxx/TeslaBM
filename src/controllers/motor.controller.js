@@ -113,12 +113,10 @@ class MotorController {
     updateMotor = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const { name, desc, originalPrice, salePrice, categoryId, mfg } =
+            const { name, originalPrice, categoryId, colorId, mfg, quantity } =
                 req.body;
 
             const motorId = parseInt(id);
-            const price = parseInt(originalPrice);
-            const priceS = parseInt(salePrice);
             if (isNaN(motorId)) {
                 throw new BadRequestError('Motor ID must be a number!');
             }
@@ -126,12 +124,11 @@ class MotorController {
             const updatedMotor = await MotorService.updateMotor(
                 motorId,
                 name,
-                null,
-                desc,
-                price,
-                priceS,
+                originalPrice,
                 categoryId,
-                mfg
+                colorId,
+                mfg,
+                quantity
             );
             if (!updatedMotor) {
                 throw new BadRequestError('Motor not found!');

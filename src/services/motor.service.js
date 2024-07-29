@@ -527,54 +527,67 @@ class MotorService {
     static updateMotor = async (
         id,
         name,
-        desc,
         originalPrice,
-        salePrice,
         categoryId,
-        mfg
+        colorId,
+        mfg,
+        stock
     ) => {
-        const motor = await prisma.motor.findUnique({
-            where: { id },
-        });
-
         const motorDetail = await prisma.motorDetail.findUnique({
-            where: { motorId: id },
+            where: { id: id },
         });
 
-        if (!motor) {
+        if (!motorDetail) {
             throw new BadRequestError('Motor not found!');
         }
+        const motor = await prisma.motor.findUnique({
+            where: { id: motorDetail.motorId },
+        });
+
+        const inventory = await prisma.inventories.findFirst({
+            where: { motorDetailId: motorDetail.id },
+        });
 
         const newSlug = name
             ? slugify(name + ' ' + mfg, { lower: true, strict: true })
             : motor.slug;
 
         const updatedMotor = await prisma.motor.update({
-            where: { id },
+            where: { id: motor.id },
             data: {
                 name: name || motor.name,
                 slug: newSlug,
-                desc: desc || motor.desc,
-                originalPrice: originalPrice || motor.originalPrice,
-                categoryId: categoryId || motor.categoryId,
+                // desc: desc || motor.desc,
+                // originalPrice: originalPrice || motor.originalPrice,
+                categoryId: +categoryId || motor.categoryId,
                 mfg: mfg || motor.mfg,
             },
         });
 
-        const updatedMotorDetail = await prisma.motor.update({
+        const updatedMotorDetail = await prisma.motorDetail.update({
             where: { id },
             data: {
-                originalPrice: originalPrice || motorDetail.originalPrice,
-                salePrice: salePrice || motorDetail.salePrice,
+                originalPrice: +originalPrice || motorDetail.originalPrice,
+                salePrice: +originalPrice || motorDetail.salePrice,
+                colorId: +colorId || motorDetail.colorId,
+            },
+        });
+
+        const updatedInventories = await prisma.inventories.update({
+            where: { id: inventory.id },
+            data: {
+                stock: +stock || inventory.stock,
             },
         });
 
         // Fetch the updated motor with its details
         const motorWithDetails = await prisma.motor.findUnique({
-            where: { id },
+            where: { id: motor.id },
             include: {
-                motorDetails: { include: { color: true } }, // Bao gồm chi tiết motor và màu sắc của nó
-                images: true, // Bao gồm hình ảnh của motor
+                motorDetail: {
+                    include: { color: true, inventories: true },
+                },
+                images: true,
             },
         });
 
