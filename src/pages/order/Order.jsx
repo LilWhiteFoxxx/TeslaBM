@@ -8,6 +8,10 @@ const OrderPage = () => {
     const { data, isLoading, error, refetch } = useGetAllOrderQuery();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [status, setStatus] = useState(''); // New state for order status
+
+    // Define status options
+    const statusOptions = ['Pending', 'Approved', 'Delivered', 'Cancelled'];
 
     // Filter and sort orders
     const filteredOrders = data?.metadata
@@ -19,7 +23,9 @@ const OrderPage = () => {
             const end = endDate
                 ? new Date(endDate).setHours(23, 59, 59, 999)
                 : new Date(); // End of day for endDate
-            return orderDate >= start && orderDate <= end;
+            const dateInRange = orderDate >= start && orderDate <= end;
+            const statusMatches = status ? order.orderStatus === status : true; // Filter by status
+            return dateInRange && statusMatches;
         })
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -27,7 +33,7 @@ const OrderPage = () => {
         <div className="order-page">
             <h1>Order</h1>
             <div className="flex gap-2 mb-1 date-filter">
-                <label>
+                <label className='font-semibold'>
                     Start Date:
                     <input
                         type="date"
@@ -36,7 +42,7 @@ const OrderPage = () => {
                         className="ml-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[30px]"
                     />
                 </label>
-                <label>
+                <label className='font-semibold'>
                     End Date:
                     <input
                         type="date"
@@ -45,6 +51,23 @@ const OrderPage = () => {
                         className="ml-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[30px]"
                     />
                 </label>
+                <div className='ml-auto'>
+                    <label className='font-semibold'>
+                        Status:
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="ml-2 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[30px]"
+                        >
+                            <option value="">All</option>
+                            {statusOptions.map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </div>
             </div>
             {isLoading && <p>Loading...</p>}
             {error && <p>Error loading orders: {error.message}</p>}

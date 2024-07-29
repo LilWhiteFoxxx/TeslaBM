@@ -16,10 +16,6 @@ import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import { UilUsdSquare, UilMoneyWithdrawal } from '@iconscout/react-unicons';
 // import { keyboard } from '@testing-library/user-event/dist/keyboard';
 
-// Recent Card Imports
-// import img1 from '../imgs/img1.png';
-// import img2 from '../imgs/img2.png';
-import img3 from '../imgs/img3.png';
 
 // Sidebar Data
 export const SidebarData = [
@@ -117,20 +113,20 @@ export const cardsData = [
 export const UpdatesData = [
     {
         img: 'https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/308706696_3508641156039697_6126392322326609734_n.jpg?stp=dst-jpg_p200x200&_nc_cat=102&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGfcZzpXgPIrXbvcQ-1JXchSx3uqacPP-xLHe6ppw8_7DnUXD3yJ5Lpy1e5HTMrgm82eQVKRS16Z7BfjWxBfAJt&_nc_ohc=JOq_ap4MgvYQ7kNvgGnElCd&_nc_ht=scontent.fsgn8-4.fna&oh=00_AYAHD24hL25TrCriNUk_4lS2iZyUV_L65Y-mbKI7BizWkw&oe=66A51965',
-        name: 'Du Sky',
+        name: 'Elon Dao',
         noti: 'has ordered M 1000 RR.',
         time: '25 seconds ago',
     },
     {
         img: 'https://scontent.fsgn8-3.fna.fbcdn.net/v/t1.6435-1/168120358_243280274167565_3614056355110904990_n.jpg?stp=dst-jpg_p200x200&_nc_cat=109&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeFq704cUcb__M3K199aDSNOJEGvbJWe4DIkQa9slZ7gMpZmxxWLZEc45wGx1dJXvW07hmHcrAWcdjkT7dSJfV6x&_nc_ohc=kyRy7uoOl8UQ7kNvgGZjtHm&_nc_ht=scontent.fsgn8-3.fna&oh=00_AYD4BUGVpMlWjJgQHvyEiHt1nWSyBDDgKntk466bkZfLBg&oe=66C6DCA5',
-        name: 'King Gu',
+        name: 'Kingu',
         noti: 'has received S 1000 RR.',
         time: '30 minutes ago',
     },
     {
-        img: img3,
-        name: 'Iron Man',
-        noti: 'has ordered Apple smart watch, samsung Gear 2500mh battery.',
+        img: 'https://i0.wp.com/hyperallergic-newspack.s3.amazonaws.com/uploads/2024/01/Melon1-1-1200x1200.jpg?resize=780%2C780&quality=95&ssl=1',
+        name: 'Watermelon Mai',
+        noti: 'has ordered GS 1250 AT',
         time: '2 hours ago',
     },
 ];

@@ -12,12 +12,6 @@ export const accessoriesApi = createApi({
                 method: 'get',
             }),
         }),
-        // deleteCategory: builder.mutation({
-        //     query: (id) => ({
-        //         url: `/categories/${id}`,
-        //         method: 'delete',
-        //     }),
-        // }),
         createAccessories: builder.mutation({
             query: (payload) => ({
                 url: `/accessories`,
@@ -25,9 +19,23 @@ export const accessoriesApi = createApi({
                 data: payload,
             }),
         }),
+        updateAccessories: builder.mutation({
+            query: (payload) => ({
+                url: `/accessories/${payload.id}`,
+                method: 'put',
+                data: payload,
+            }),
+        }),
+        deleteAccessories: builder.mutation({
+            query: (id) => ({
+                url: `/accessories/${id}`,
+                method: 'delete',
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllAccessoriesQuery, useCreateAccessoriesMutation } = accessoriesApi;
+export const { useGetAllAccessoriesQuery, useCreateAccessoriesMutation, useUpdateAccessoriesMutation, useDeleteAccessoriesMutation } =
+    accessoriesApi;

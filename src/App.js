@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import RightSide from './components/RigtSide/RightSide';
+// import RightSide from './components/RigtSide/RightSide';
 import Sidebar from './components/Sidebar';
 
 import './App.css';
@@ -10,7 +10,7 @@ function App() {
             <div className="AppGlass">
                 <Sidebar />
                 <Outlet />
-                <RightSide />
+                {/* <RightSide /> */}
             </div>
         </div>
     );

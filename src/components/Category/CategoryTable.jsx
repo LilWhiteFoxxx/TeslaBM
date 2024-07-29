@@ -8,7 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 
 import {
@@ -111,9 +110,9 @@ export default function CategoryTable() {
                     onClick={handleAdd}
                     className="btn-add"
                     size="small"
-                    startIcon={<AddIcon />}
+                    // startIcon={<AddIcon />}
                 >
-                    Add
+                    <p className='text-2xl'>+</p>
                 </Button>
             </div>
             <div className="category-container">

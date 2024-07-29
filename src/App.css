@@ -11,17 +11,26 @@
   --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
   --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
   --activeItem: #f799a354;
+  --gradient-pink-yellow: linear-gradient(180deg, #ff6f61 0%, #ffeb3b 100%);
+  --gradient-green-teal: linear-gradient(180deg, #004d40 0%, #00e676 100%);
+  --gradient-black-gray: linear-gradient(180deg, #434343 0%, #000000 100%);
+  --gradient-aqua-blue: linear-gradient(180deg, #00bcd4 0%, #004d40 100%);
+  --gradient-light-pink-teal: linear-gradient(180deg,#b9fbc0 0%, #f9a8d4 100%);
+
+
+
 }
 
 .App {
   /* padding: 0.5rem 3.5rem; */
   color: var(--black);
-  background: linear-gradient(
+  /* background: linear-gradient(
     106.37deg,
     #ffe1bc 29.63%,
     #ffcfd1 51.55%,
     #f3c6f1 90.85%
-  );
+  ); */
+  background: var(--gradient-light-pink-teal);
   height: 100vh;
   display: flex;
   align-items: center;

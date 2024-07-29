@@ -12,12 +12,6 @@ export const motorApi = createApi({
                 method: 'get',
             }),
         }),
-        // deleteCategory: builder.mutation({
-        //     query: (id) => ({
-        //         url: `/categories/${id}`,
-        //         method: 'delete',
-        //     }),
-        // }),
         createMotor: builder.mutation({
             query: (payload) => ({
                 url: `/motors`,
@@ -25,9 +19,28 @@ export const motorApi = createApi({
                 data: payload,
             }),
         }),
+        updateMotor: builder.mutation({
+            query: (payload) => ({
+                url: `/motors/${payload.id}`,
+                method: 'put',
+                data: payload,
+            }),
+        }),
+        deleteMotor: builder.mutation({
+            query: (id) => ({
+                url: `/motors/${id}`,
+                method: 'delete',
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllMotorQuery, useCreateMotorMutation } = motorApi;
+export const {
+    useGetAllMotorQuery,
+    useCreateMotorMutation,
+    useUpdateMotorMutation,
+    useDeleteMotorMutation,
+} = motorApi;
+ 

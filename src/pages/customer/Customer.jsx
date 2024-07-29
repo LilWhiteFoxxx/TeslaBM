@@ -1,23 +1,50 @@
-import React from 'react';
-// import Cards from "../../components/Cards/Cards";
-import Table from '../../components/Table/Table';
-// import { useGetMotorCategoryQuery } from '../../apis/categoryApi';
-
+import React, { useState, useEffect } from 'react';
 import './customer.css';
+import useSocket from '../../hooks/useSocket';
 
 const CustomerPage = () => {
-    // const { data, isLoading, error } = useGetMotorCategoryQuery({
-    //     limit: 50,
-    //     offset: 0,
-    // });
+    const socket = useSocket();
+    const [message, setMessage] = useState('');
 
-    // console.log('go', data, isLoading, error);
+    useEffect(() => {
+        if (socket) {
+            socket.on('receivedMessage', (data) => {
+                alert(`Received message: ${data.message}`);
+            });
+
+            // Emit an event when the component mounts
+            // socket.emit('someEvent', { data: 'test' });
+
+            // Cleanup on component unmount
+            // return () => {
+            //     socket.off('responseEvent');
+            // };
+        }
+    }, [socket]);
+
+    const handleInputChange = (event) => {
+        setMessage(event.target.value);
+    };
+
+    const handleSendMessage = () => {
+        if (message.trim()) {
+            socket.emit('sendMessage', { message });
+            setMessage(''); // Clear the input field
+        }
+    };
 
     return (
         <div className="customer-page">
             <h1>Customer</h1>
-            {/* <Cards /> */}
-            <Table />
+            <div className="message-container">
+                <input
+                    type="text"
+                    value={message}
+                    onChange={handleInputChange}
+                    placeholder="Type your message here..."
+                />
+                <button onClick={handleSendMessage}>Send</button>
+            </div>
         </div>
     );
 };

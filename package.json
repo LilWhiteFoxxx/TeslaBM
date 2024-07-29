@@ -29,6 +29,7 @@
     "react-router-dom": "^6.25.1",
     "react-scripts": "5.0.0",
     "shadcn": "^1.0.0",
+    "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "web-vitals": "^2.1.0"

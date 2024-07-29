@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useGetAllColorQuery } from '../../../src/apis/colorApi';
+import { useUploadFirebaseMutation } from '../../../src/apis/uploadFirebaseApi';
 
 const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
     const [formData, setFormData] = useState({
@@ -20,6 +22,14 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
         images: [],
     });
 
+    const [images, setimages] = useState({
+        img: null,
+        imgHover: null,
+        images: [],
+    });
+    const { data: colors } = useGetAllColorQuery();
+    const [uploadFirebase] = useUploadFirebaseMutation();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -30,6 +40,10 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+        setimages((prevData) => ({
+            ...prevData,
+            img: file,
+        }));
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -44,6 +58,10 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
 
     const handleHoverImageChange = (e) => {
         const file = e.target.files[0];
+        setimages((prevData) => ({
+            ...prevData,
+            imgHover: file,
+        }));
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -58,6 +76,10 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
 
     const handleMultipleImagesChange = (e) => {
         const files = Array.from(e.target.files);
+        setimages((prevData) => ({
+            ...prevData,
+            images: files,
+        }));
         const imageUrls = files.map((file) => URL.createObjectURL(file));
         setFormData((prevData) => ({
             ...prevData,
@@ -98,9 +120,51 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
         }));
     };
 
-    const handleSubmit = () => {
-        onSubmit(formData);
-        onClose();
+    const handleSubmit = async () => {
+        try {
+            const imageUploadPromises = [];
+
+            if (images.img) {
+                const imgUploadPromise = uploadFirebase({
+                    files: [images.img],
+                }).then((response) => response.data?.metadata);
+                imageUploadPromises.push(imgUploadPromise);
+            }
+            if (images.imgHover) {
+                const imgHoverUploadPromise = uploadFirebase({
+                    files: [images.imgHover],
+                }).then((response) => response.data?.metadata);
+                imageUploadPromises.push(imgHoverUploadPromise);
+            }
+            if (images.images.length > 0) {
+                const multipleImagesUploadPromise = uploadFirebase({
+                    files: images.images,
+                }).then((response) => response.data?.metadata);
+                imageUploadPromises.push(multipleImagesUploadPromise);
+            }
+
+            const [imgMetadata, imgHoverMetadata, imagesMetadata] =
+                await Promise.all(imageUploadPromises);
+
+            const imgUrls = imgMetadata ? [imgMetadata[0]] : null;
+            const imgHoverUrls = imgHoverMetadata
+                ? [imgHoverMetadata[0]]
+                : null;
+            const imagesUrls = imagesMetadata ? imagesMetadata : null;
+
+            // Set the URLs in formData
+            const updatedFormData = {
+                ...formData,
+                img: imgUrls[0] || null,
+                imgHover: imgHoverUrls[0] || null,
+                images: imagesUrls.length > 0 ? imagesUrls : null,
+            };
+
+            onSubmit(updatedFormData);
+            onClose();
+        } catch (error) {
+            console.error('Error uploading images:', error);
+        }
     };
 
     if (!isOpen) return null;
@@ -265,17 +329,23 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
                             </div>
                             <div className="mb-2">
                                 <label className="block text-sm font-medium mb-1">
-                                    Color ID
+                                    Color
                                 </label>
-                                <input
-                                    type="number"
+                                <select
                                     name="colorId"
                                     value={detail.colorId}
                                     onChange={(e) =>
                                         handleMotorDetailChange(index, e)
                                     }
                                     className="border border-gray-300 rounded w-full p-2"
-                                />
+                                >
+                                    <option value="">Select Color</option>
+                                    {colors?.metadata?.map((color) => (
+                                        <option key={color.id} value={color.id}>
+                                            {color.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="mb-2">
                                 <label className="block text-sm font-medium mb-1">

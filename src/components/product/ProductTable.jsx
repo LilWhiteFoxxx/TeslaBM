@@ -1,8 +1,22 @@
 import React from 'react';
-
+import MotorEditModal from './MotorEditModal';
 import { capitalizeFirstLetter, formatDate } from '../../utils';
+import AccessoriesEditModal from './AccessoriesEditModal';
 
-const ProductTable = ({ products }) => {
+const ProductTable = ({ products, categories, refetch, type = 'motor' }) => {
+    const [selectedProduct, setSelectedProduct] = React.useState(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const openModal = (product) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedProduct(null);
+        setIsModalOpen(false);
+    };
+
     if (!products || products.length === 0) return <p>No data available</p>;
 
     return (
@@ -10,7 +24,7 @@ const ProductTable = ({ products }) => {
             <table className="min-w-full bg-white border border-gray-200">
                 <thead>
                     <tr>
-                        <th className="py-2 px-4 border-b">STT</th>
+                        <th className="sticky top-0 py-2 px-4 border-b">STT</th>
                         <th className="py-2 px-4 border-b">Product</th>
                         <th className="py-2 px-4 border-b">Color</th>
                         <th className="py-2 px-4 border-b">
@@ -24,7 +38,11 @@ const ProductTable = ({ products }) => {
                 </thead>
                 <tbody>
                     {products.map((product, index) => (
-                        <tr key={product.id}>
+                        <tr
+                            key={product.id}
+                            onClick={() => openModal(product)}
+                            className="cursor-pointer hover:bg-gray-100"
+                        >
                             <td className="py-2 px-4 border-b">{index + 1}</td>
                             <td className="py-2 px-4 border-b flex items-center">
                                 <img
@@ -83,6 +101,24 @@ const ProductTable = ({ products }) => {
                     ))}
                 </tbody>
             </table>
+
+            {isModalOpen &&
+                selectedProduct &&
+                (type === 'motor' ? (
+                    <MotorEditModal
+                        product={selectedProduct}
+                        categories={categories}
+                        onClose={closeModal}
+                        onRefetch={refetch}
+                    />
+                ) : (
+                    <AccessoriesEditModal
+                        product={selectedProduct}
+                        categories={categories}
+                        onClose={closeModal}
+                        onRefetch={refetch}
+                    />
+                ))}
         </div>
     );
 };

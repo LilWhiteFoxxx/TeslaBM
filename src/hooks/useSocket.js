@@ -5,7 +5,7 @@ const useSocket = () => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketIo = io("http://localhost:3000"); // replace with your server URL
+        const socketIo = io("http://localhost:5000"); // replace with your server URL
         setSocket(socketIo);
 
         // Cleanup on component unmount

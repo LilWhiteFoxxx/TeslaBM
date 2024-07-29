@@ -24,8 +24,8 @@ const MotorPage = () => {
         try {
             console.log(product);
             await createMotor(product).unwrap();
-            refetch(); // Refresh data after adding a product
-            setModalOpen(false); // Close the modal after submission
+            refetch();
+            setModalOpen(false);
         } catch (err) {
             console.error('Failed to add product:', err);
             // Handle error (e.g., show an error message to the user)
@@ -70,7 +70,11 @@ const MotorPage = () => {
             </div>
 
             <div className="table-container">
-                <ProductTable products={filteredData} />
+                <ProductTable
+                    products={filteredData}
+                    categories={categoriesData?.metadata || []}
+                    refetch={refetch}
+                />
             </div>
             {isModalOpen && (
                 <div className="modal-add">

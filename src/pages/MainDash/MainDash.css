@@ -1,4 +1,4 @@
-.MainDash{
+.MainDash {
     /* padding-top: 1rem; */
     display: flex;
     flex-direction: column;
@@ -8,18 +8,30 @@
         font-size: 2em;
         font-weight: bold;
     }
+
+    .order-container {
+        width: 100%;
+        overflow-x: auto; /* Horizontal scrolling if needed */
+        max-height: 500px;
+        min-height: 300px; /* Optional: Max height to constrain table size */
+    }
+
+    .order-container table {
+        width: 100%; /* Ensure table width matches container width */
+        min-width: 800px;
+        min-height: 300px; /* Adjust based on table content */
+    }
 }
 
 @media screen and (max-width: 1200px) {
-    .MainDash{
-        justify-content:flex-start;
+    .MainDash {
+        justify-content: flex-start;
         margin-top: 2rem;
     }
 }
 
-@media screen and (max-width: 768px)
-{
-    .MainDash{
+@media screen and (max-width: 768px) {
+    .MainDash {
         align-items: center;
     }
 }

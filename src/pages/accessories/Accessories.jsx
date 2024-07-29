@@ -69,7 +69,12 @@ const AccessoriesPage = () => {
                 </button>
             </div>
             <div className="table-container">
-                <ProductTable products={filteredData} />
+                <ProductTable
+                    products={filteredData}
+                    categories={categoriesData?.metadata || []}
+                    refetch={refetch}
+                    type="accessories"
+                />
             </div>
             {isModalOpen && (
                 <div className="modal-add">
