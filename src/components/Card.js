@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { getPriceRange } from '../utils';
 // import { addItem } from '../app/features/cartSlice';
 import './Card.scss';
 
@@ -8,9 +9,10 @@ const Card = (props) => {
     const itemImg = props.itemImg;
     const itemImgHover = props.itemImgHover;
     const itemName = props.itemName;
-    const itemPrice = props.itemPrice;
     const stockStatus = props.stockStatus;
     const product = props.product;
+    // const itemPrice = props.itemPrice;
+    const itemPrice = getPriceRange(product?.productDetails);
     const [size, setSize] = useState(false);
     const [selectedColor, setSelectedColor] = useState({});
 
@@ -18,7 +20,9 @@ const Card = (props) => {
     const navigate = useNavigate();
 
     const handleProductClick = () => {
-        navigate(`/groupproject/product/${product.slug}`, { state: { product } });
+        navigate(`/groupproject/product/${product.slug}`, {
+            state: { product },
+        });
     };
 
     return (
@@ -103,17 +107,15 @@ const Card = (props) => {
             <div className="item">
                 <div>
                     <p className="text-[12px]">{product.mfg}</p>
-                    <p
-                        className="itemName"
-                        onClick={handleProductClick}
-                    >
+                    <p className="itemName" onClick={handleProductClick}>
                         {itemName}
                     </p>
                     <p className="itemPrice">
-                        ${typeof itemPrice === 'object'
-                            ? `${itemPrice[0].toLocaleString(
+                        $
+                        {typeof itemPrice === 'object'
+                            ? `${itemPrice.minPrice.toLocaleString(
                                   'en-US'
-                              )} - $${itemPrice[1].toLocaleString('en-US')}`
+                              )} - $${itemPrice.maxPrice.toLocaleString('en-US')}`
                             : itemPrice.toLocaleString('en-US')}
                     </p>
                 </div>

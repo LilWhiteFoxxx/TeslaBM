@@ -17,3 +17,22 @@ export function formatDate2(date) {
 
     return `${year}-${month}-${day}`; // Format as YYYY-MM-DD
 }
+
+export function getPriceRange(products) {
+    if (products.length === 0) return null;
+
+    const prices = products.map(p => p.salePrice);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+
+    if (products.length === 1) {
+        return minPrice;
+    } else if (minPrice === maxPrice) {
+        return minPrice;
+    } else {
+        return {
+            minPrice,
+            maxPrice
+        };
+    }
+}
