@@ -6,8 +6,8 @@ const router = express.Router();
 const { asyncHandler } = require('../../helpers');
 
 router.get(
-    '/orderstatisticsbystatus',
-    asyncHandler(orderController.getOrderStatisticsByStatus)
+    '/ordertotalsalebystatus',
+    asyncHandler(orderController.getOrderTotalSaleByStatus)
 );
 router.get(
     '/topsellingproducts',

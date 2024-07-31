@@ -142,11 +142,11 @@ class OrderController {
         }
     };
 
-    getOrderStatisticsByStatus = async (req, res, next) => {
+    getOrderTotalSaleByStatus = async (req, res, next) => {
         try {
             const { startdate, enddate } = req.query;
             const orderStatisticsByStatus =
-                await OrderService.getOrderStatisticsByStatus(
+                await OrderService.getOrderTotalSaleByStatus(
                     startdate,
                     enddate
                 );

@@ -553,26 +553,44 @@ class OrderService {
         return topSellingProducts;
     }
 
-    // Get order statistics by status
-    static async getOrderStatisticsByStatus(startDate, endDate) {
+    static async getOrderTotalSaleByStatus(startDate, endDate) {
         if (!startDate || !endDate) {
             throw new BadRequestError('Start date and end date are required');
         }
-
-        const statistics = await prisma.order.groupBy({
-            by: ['orderStatusId'],
-            _count: {
-                id: true,
-            },
-            where: {
-                createdAt: {
-                    gte: new Date(startDate),
-                    lte: new Date(endDate),
+    
+        try {
+            const statistics = await prisma.order.groupBy({
+                by: ['orderStatusId'],
+                _sum: {
+                    total: true,
                 },
-            },
-        });
-
-        return statistics;
+                where: {
+                    createdAt: {
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
+                    },
+                    orderStatusId: 4, 
+                },
+            });
+    
+            const count = await prisma.order.count({
+                where: {
+                    createdAt: {
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
+                    },
+                    orderStatusId: 4,
+                }
+            });
+    
+            return {
+                totalSales: statistics,
+                orderCount: count
+            };
+        } catch (error) {
+            console.error('Error getting order statistics:', error);
+            throw new Error('Error retrieving order statistics');
+        }
     }
 }
 

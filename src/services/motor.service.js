@@ -111,17 +111,105 @@ class MotorService {
         return mappedMotors;
     };
 
-    static getAllMotor2 = async (limit = 50, offset = 0) => {
-        const motors = await prisma.motor.findMany({
-            take: limit,
-            skip: offset,
+    static getMotorById = async (id) => {
+        // Fetch motor details
+        const motor = await prisma.motor.findUnique({
+            where: { id: id },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                desc: true,
+                originalPrice: true,
+                categoryId: true,
+                mfg: true,
+                img: true,
+                imgHover: true,
+                dataAndEquipment: true,
+                category: {
+                    select: { name: true },
+                },
+                images: {
+                    select: {
+                        id: true,
+                        path: true,
+                    },
+                },
+            },
         });
 
-        if (!motors || motors.length === 0) {
-            throw new BadRequestError('No motors found!');
+        if (!motor) {
+            throw new BadRequestError('No motor found!');
         }
 
-        return motors;
+        // Fetch motor details for the current motor including color
+        const motorDetails = await prisma.motorDetail.findMany({
+            where: { motorId: motor.id },
+            include: {
+                color: {
+                    select: {
+                        name: true,
+                        img: true,
+                    },
+                },
+            },
+        });
+
+        // Fetch inventories based on motorDetails ids
+        const inventories = await Promise.all(
+            motorDetails.map(async (motorDetail) => {
+                return await prisma.inventories.findMany({
+                    where: { motorDetailId: motorDetail.id },
+                    select: {
+                        id: true,
+                        motorDetailId: true,
+                        stock: true,
+                    },
+                });
+            })
+        );
+
+        // Flatten inventories array
+        const flattenedInventories = inventories.flat();
+        const stockStatus = flattenedInventories.some(
+            (inventory) => inventory.stock > 0
+        );
+
+        // Map motors to desired format
+        const mappedMotor = {
+            id: motor.id,
+            itemImg: motor.img,
+            itemImgHover: motor.imgHover,
+            itemName: motor.name,
+            itemPrice: motor.originalPrice,
+            slug: motor.slug,
+            desc: motor.desc,
+            dataAndEquipment: motor.dataAndEquipment,
+            subCategory: motor.category.name, // Adjust this field if necessary
+            category: 'motors',
+            stockStatus, // Set stockStatus based on inventories
+            options: ['view-details'], // Placeholder options, replace with actual data if available
+            mfg: motor.mfg,
+            productDetails: motorDetails.map((md) => {
+                const res = flattenedInventories.find(
+                    (inv) => inv.motorDetailId === md.id
+                );
+                return {
+                    id: md.id,
+                    motorId: md.motorId,
+                    colorId: md.colorId,
+                    color: md.color.name,
+                    colorImage: md.color.img,
+                    originalPrice: md.originalPrice,
+                    salePrice: md.salePrice,
+                    inventoriesId: res ? res.id : null,
+                    stock: res ? res.stock : 0,
+                };
+            }),
+            images: motor.images,
+        };
+
+        return mappedMotor;
     };
 
     static getAllMotorByCategory = async (
@@ -312,7 +400,8 @@ class MotorService {
         img,
         imgHover,
         motorDetails = [],
-        images = []
+        images = [],
+        dataAndEquipment
     ) => {
         if (
             !name ||
@@ -325,7 +414,6 @@ class MotorService {
         ) {
             throw new BadRequestError('Required!');
         }
-
         const slug = slugify(name + ' ' + mfg, { lower: true, strict: true });
 
         // Create the motor
@@ -339,6 +427,7 @@ class MotorService {
                 imgHover,
                 categoryId,
                 mfg,
+                dataAndEquipment: dataAndEquipment,
             },
         });
 
@@ -383,6 +472,7 @@ class MotorService {
                 mfg: true,
                 img: true,
                 imgHover: true,
+                dataAndEquipment: true,
                 motorDetail: {
                     select: {
                         id: true,
@@ -409,120 +499,120 @@ class MotorService {
         return motorWithDetails;
     };
 
-    static createMotor = async (
-        name,
-        desc,
-        originalPrice,
-        categoryId,
-        mfg,
-        img,
-        imgHover,
-        motorDetails = [],
-        images = []
-    ) => {
-        if (
-            !name ||
-            !desc ||
-            !originalPrice ||
-            !categoryId ||
-            !mfg ||
-            !motorDetails ||
-            !images
-        ) {
-            throw new BadRequestError('Required!');
-        }
+    // static createMotor = async (
+    //     name,
+    //     desc,
+    //     originalPrice,
+    //     categoryId,
+    //     mfg,
+    //     img,
+    //     imgHover,
+    //     motorDetails = [],
+    //     images = []
+    // ) => {
+    //     if (
+    //         !name ||
+    //         !desc ||
+    //         !originalPrice ||
+    //         !categoryId ||
+    //         !mfg ||
+    //         !motorDetails ||
+    //         !images
+    //     ) {
+    //         throw new BadRequestError('Required!');
+    //     }
 
-        try {
-            const slug = slugify(name + ' ' + mfg, {
-                lower: true,
-                strict: true,
-            });
+    //     try {
+    //         const slug = slugify(name + ' ' + mfg, {
+    //             lower: true,
+    //             strict: true,
+    //         });
 
-            // Create the motor
-            const newMotor = await prisma.motor.create({
-                data: {
-                    name,
-                    slug,
-                    desc,
-                    originalPrice,
-                    img,
-                    imgHover,
-                    categoryId,
-                    mfg,
-                },
-            });
+    //         // Create the motor
+    //         const newMotor = await prisma.motor.create({
+    //             data: {
+    //                 name,
+    //                 slug,
+    //                 desc,
+    //                 originalPrice,
+    //                 img,
+    //                 imgHover,
+    //                 categoryId,
+    //                 mfg,
+    //             },
+    //         });
 
-            // Create motor details if provided
-            for (const detail of motorDetails) {
-                const motorD = await prisma.motorDetail.create({
-                    data: {
-                        motorId: newMotor.id,
-                        originalPrice: Number(detail.originalPrice),
-                        salePrice: Number(detail.salePrice),
-                        colorId: Number(detail.colorId),
-                    },
-                });
+    //         // Create motor details if provided
+    //         for (const detail of motorDetails) {
+    //             const motorD = await prisma.motorDetail.create({
+    //                 data: {
+    //                     motorId: newMotor.id,
+    //                     originalPrice: Number(detail.originalPrice),
+    //                     salePrice: Number(detail.salePrice),
+    //                     colorId: Number(detail.colorId),
+    //                 },
+    //             });
 
-                await prisma.inventories.create({
-                    data: {
-                        motorDetailId: motorD.id,
-                        stock: Number(detail.quantity),
-                    },
-                });
-            }
+    //             await prisma.inventories.create({
+    //                 data: {
+    //                     motorDetailId: motorD.id,
+    //                     stock: Number(detail.quantity),
+    //                 },
+    //             });
+    //         }
 
-            // Create images if provided
-            for (const image of images) {
-                await prisma.images.create({
-                    data: {
-                        motorId: newMotor.id,
-                        path: image,
-                    },
-                });
-            }
+    //         // Create images if provided
+    //         for (const image of images) {
+    //             await prisma.images.create({
+    //                 data: {
+    //                     motorId: newMotor.id,
+    //                     path: image,
+    //                 },
+    //             });
+    //         }
 
-            const motorWithDetails = await prisma.motor.findUnique({
-                where: { id: newMotor.id },
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    desc: true,
-                    originalPrice: true,
-                    categoryId: true,
-                    mfg: true,
-                    img: true,
-                    imgHover: true,
-                    motorDetail: {
-                        select: {
-                            id: true,
-                            originalPrice: true,
-                            salePrice: true,
-                            colorId: true,
-                            inventories: {
-                                select: {
-                                    id: true,
-                                    stock: true,
-                                },
-                            },
-                        },
-                    },
-                    images: {
-                        select: {
-                            id: true,
-                            path: true,
-                        },
-                    },
-                },
-            });
+    //         const motorWithDetails = await prisma.motor.findUnique({
+    //             where: { id: newMotor.id },
+    //             select: {
+    //                 id: true,
+    //                 name: true,
+    //                 slug: true,
+    //                 desc: true,
+    //                 originalPrice: true,
+    //                 categoryId: true,
+    //                 mfg: true,
+    //                 img: true,
+    //                 imgHover: true,
+    //                 motorDetail: {
+    //                     select: {
+    //                         id: true,
+    //                         originalPrice: true,
+    //                         salePrice: true,
+    //                         colorId: true,
+    //                         inventories: {
+    //                             select: {
+    //                                 id: true,
+    //                                 stock: true,
+    //                             },
+    //                         },
+    //                     },
+    //                 },
+    //                 images: {
+    //                     select: {
+    //                         id: true,
+    //                         path: true,
+    //                     },
+    //                 },
+    //             },
+    //         });
 
-            return motorWithDetails;
-        } catch (error) {
-            // Handle error appropriately
-            console.error('Error creating motor:', error);
-            throw new Error('Failed to create motor');
-        }
-    };
+    //         return motorWithDetails;
+    //     } catch (error) {
+    //         // Handle error appropriately
+    //         console.error('Error creating motor:', error);
+    //         throw new Error('Failed to create motor');
+    //     }
+    // };
 
     static updateMotor = async (
         id,

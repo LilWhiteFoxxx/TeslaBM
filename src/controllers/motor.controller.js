@@ -62,6 +62,19 @@ class MotorController {
         }
     };
 
+    getMotorById = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const motor = await MotorService.getMotorById(parseInt(id));
+            new SuccessResponse({
+                message: 'Get motor success!',
+                metadata: motor,
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     // Tạo một motor mới
     createMotor = async (req, res, next) => {
         try {
@@ -73,6 +86,7 @@ class MotorController {
                 mfg,
                 img,
                 imgHover,
+                dataAndEquipment,
                 motorDetails = [], // danh sách chi tiết motor để thêm
                 images = [], // danh sách hình ảnh để thêm
             } = req.body;
@@ -94,7 +108,8 @@ class MotorController {
                 img,
                 imgHover,
                 motorDetails,
-                images
+                images,
+                dataAndEquipment
             );
 
             new SuccessResponse(
