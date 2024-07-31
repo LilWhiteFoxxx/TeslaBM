@@ -60,7 +60,7 @@ const statusOptions = [
     { id: 4, status: 'Delivered' },
 ];
 
-export default function RecentOrderTable({ orders, refetch }) {
+export default function RecentOrderTable({ orders, refetch, refetchSales }) {
     const [rows, setRows] = useState([]);
     const [editRow, setEditRow] = useState(null);
     const [currentStatus, setCurrentStatus] = useState(null);
@@ -95,6 +95,7 @@ export default function RecentOrderTable({ orders, refetch }) {
                 orderStatusId: currentStatus,
             }).unwrap();
             refetch();
+            refetchSales();
             setEditRow(null); // Exit edit mode
             setCurrentStatus(null); // Reset current status
             setOriginalStatus(null); // Reset original status

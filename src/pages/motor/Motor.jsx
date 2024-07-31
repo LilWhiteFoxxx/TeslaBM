@@ -22,7 +22,7 @@ const MotorPage = () => {
 
     const handleAddProduct = async (product) => {
         try {
-            console.log(product);
+            console.log('Create Motor', product);
             await createMotor(product).unwrap();
             refetch();
             setModalOpen(false);

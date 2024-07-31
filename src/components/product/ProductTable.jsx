@@ -48,7 +48,7 @@ const ProductTable = ({ products, categories, refetch, type = 'motor' }) => {
                                 <img
                                     src={product.img}
                                     alt={product.name}
-                                    className="w-16 h-16 object-cover rounded mr-4"
+                                    className="w-16 h-16 object-contain rounded mr-4"
                                 />
                                 {product.name}
                             </td>

@@ -43,7 +43,7 @@ function CompactCard({ param, setExpanded }) {
       </div>
       <div className="detail">
         <Png />
-        <span>${param.value}</span>
+        <span>{param.title === 'Orders' ? param.value : `$${param.value}`}</span>
         <span>Last 24 hours</span>
       </div>
     </motion.div>
@@ -105,7 +105,7 @@ function ExpandedCard({ param, setExpanded }) {
 
   return (
     <motion.div
-      className="ExpandedCard"
+      className="ExpandedCard z-30"
       style={{
         background: param.color.backGround,
         boxShadow: param.color.boxShadow,

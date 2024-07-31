@@ -20,6 +20,16 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
             },
         ],
         images: [],
+        dataAndEquipment: {
+            sound: '',
+            atbOne: { atbName: '', atbNumber: '' },
+            atbTwo: { atbName: '', atbNumber: '' },
+            atbThree: { atbName: '', atbNumber: '' },
+            atbFour: { atbName: '', atbNumber: '' },
+            imgData: '',
+            iconData: '',
+            imgStartEngineer: '',
+        },
     });
 
     const [images, setimages] = useState({
@@ -27,6 +37,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
         imgHover: null,
         images: [],
     });
+
     const { data: colors } = useGetAllColorQuery();
     const [uploadFirebase] = useUploadFirebaseMutation();
 
@@ -36,6 +47,31 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
             ...prevData,
             [name]: value,
         }));
+    };
+
+    const handleDataAndEquipmentChange = (e) => {
+        const { name, value } = e.target;
+        const [field, subfield] = name.split('.');
+        if (subfield) {
+            setFormData((prevData) => ({
+                ...prevData,
+                dataAndEquipment: {
+                    ...prevData.dataAndEquipment,
+                    [field]: {
+                        ...prevData.dataAndEquipment[field],
+                        [subfield]: value,
+                    },
+                },
+            }));
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                dataAndEquipment: {
+                    ...prevData.dataAndEquipment,
+                    [field]: value,
+                },
+            }));
+        }
     };
 
     const handleImageChange = (e) => {
@@ -155,9 +191,9 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
             // Set the URLs in formData
             const updatedFormData = {
                 ...formData,
-                img: imgUrls[0] || null,
-                imgHover: imgHoverUrls[0] || null,
-                images: imagesUrls.length > 0 ? imagesUrls : null,
+                img: imgUrls ? imgUrls[0] : null,
+                imgHover: imgHoverUrls ? imgHoverUrls[0] : null,
+                images: imagesUrls?.length > 0 ? imagesUrls : null,
             };
 
             onSubmit(updatedFormData);
@@ -283,106 +319,304 @@ const ProductModal = ({ isOpen, onClose, onSubmit, categories }) => {
                         className="border border-gray-300 rounded w-full p-2"
                     />
                     {formData.images.length > 0 && (
-                        <div className="mt-2 grid grid-cols-3 gap-2">
-                            {formData.images.map((image, index) => (
+                        <div className="mt-2 flex space-x-2">
+                            {formData.images.map((img, index) => (
                                 <img
                                     key={index}
-                                    src={image}
-                                    alt={`Additional Preview ${index + 1}`}
-                                    className="w-full h-20 object-cover"
+                                    src={img}
+                                    alt={`Additional ${index}`}
+                                    className="w-20 h-20 object-cover"
                                 />
                             ))}
                         </div>
                     )}
                 </div>
-                <div>
-                    <h3 className="text-lg mb-2">Motor Details</h3>
-                    {formData.motorDetails.map((detail, index) => (
-                        <div key={index} className="mb-4 border p-4 rounded">
-                            <div className="mb-2">
-                                <label className="block text-sm font-medium mb-1">
-                                    Original Price
-                                </label>
-                                <input
-                                    type="number"
-                                    name="originalPrice"
-                                    value={detail.originalPrice}
-                                    onChange={(e) =>
-                                        handleMotorDetailChange(index, e)
-                                    }
-                                    className="border border-gray-300 rounded w-full p-2"
-                                />
-                            </div>
-                            <div className="mb-2">
-                                <label className="block text-sm font-medium mb-1">
-                                    Sale Price
-                                </label>
-                                <input
-                                    type="number"
-                                    name="salePrice"
-                                    value={detail.salePrice}
-                                    onChange={(e) =>
-                                        handleMotorDetailChange(index, e)
-                                    }
-                                    className="border border-gray-300 rounded w-full p-2"
-                                />
-                            </div>
-                            <div className="mb-2">
-                                <label className="block text-sm font-medium mb-1">
-                                    Color
-                                </label>
-                                <select
-                                    name="colorId"
-                                    value={detail.colorId}
-                                    onChange={(e) =>
-                                        handleMotorDetailChange(index, e)
-                                    }
-                                    className="border border-gray-300 rounded w-full p-2"
-                                >
-                                    <option value="">Select Color</option>
-                                    {colors?.metadata?.map((color) => (
-                                        <option key={color.id} value={color.id}>
-                                            {color.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="mb-2">
-                                <label className="block text-sm font-medium mb-1">
-                                    Quantity
-                                </label>
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    value={detail.quantity}
-                                    onChange={(e) =>
-                                        handleMotorDetailChange(index, e)
-                                    }
-                                    className="border border-gray-300 rounded w-full p-2"
-                                />
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => removeMotorDetail(index)}
-                                className="text-red-500"
-                            >
-                                Remove Detail
-                            </button>
+
+                {/* Data and Equipment Fields */}
+                <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Data and Equipment
+                    </h3>
+                    <div className="mb-2">
+                        <label className="block text-sm font-medium mb-1">
+                            Image Data
+                        </label>
+                        <input
+                            type="text"
+                            name="imgData"
+                            value={formData.dataAndEquipment.imgData}
+                            onChange={handleDataAndEquipmentChange}
+                            className="border border-gray-300 rounded w-full p-2"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label className="block text-sm font-medium mb-1">
+                            Icon Data
+                        </label>
+                        <input
+                            type="text"
+                            name="iconData"
+                            value={formData.dataAndEquipment.iconData}
+                            onChange={handleDataAndEquipmentChange}
+                            className="border border-gray-300 rounded w-full p-2"
+                        />
+                    </div>
+                    <label className="text-[16px] font-semibold mb-2">
+                        Attribute 1
+                    </label>
+                    <div className="p-2">
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                name="atbOne.atbName"
+                                value={formData.dataAndEquipment.atbOne.atbName}
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
                         </div>
-                    ))}
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Parameter
+                            </label>
+                            <input
+                                type="text"
+                                name="atbOne.atbNumber"
+                                value={
+                                    formData.dataAndEquipment.atbOne.atbNumber
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                    </div>
+                    <label className="text-[16px] font-semibold mb-2">
+                        Attribute 2
+                    </label>
+                    <div className="p-2">
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                name="atbTwo.atbName"
+                                value={formData.dataAndEquipment.atbTwo.atbName}
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Parameter
+                            </label>
+                            <input
+                                type="text"
+                                name="atbTwo.atbNumber"
+                                value={
+                                    formData.dataAndEquipment.atbTwo.atbNumber
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                    </div>
+                    <label className="text-[16px] font-semibold mb-2">
+                        Attribute 3
+                    </label>
+                    <div className="p-2">
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                name="atbThree.atbName"
+                                value={
+                                    formData.dataAndEquipment.atbThree.atbName
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Parameter
+                            </label>
+                            <input
+                                type="text"
+                                name="atbThree.atbNumber"
+                                value={
+                                    formData.dataAndEquipment.atbThree.atbNumber
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                    </div>
+                    <label className="text-[16px] font-semibold mb-2">
+                        Attribute 4
+                    </label>
+                    <div className="p-2">
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                name="atbFour.atbName"
+                                value={
+                                    formData.dataAndEquipment.atbFour.atbName
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Parameter
+                            </label>
+                            <input
+                                type="text"
+                                name="atbFour.atbNumber"
+                                value={
+                                    formData.dataAndEquipment.atbFour.atbNumber
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                    </div>
+                    <label className="text-[16px] font-semibold mb-2">
+                        Sound Engine
+                    </label>
+                    <div className="p-2">
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Image Start Engineer
+                            </label>
+                            <input
+                                type="text"
+                                name="imgStartEngineer"
+                                value={
+                                    formData.dataAndEquipment.imgStartEngineer
+                                }
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Sound
+                            </label>
+                            <input
+                                type="text"
+                                name="sound"
+                                value={formData.dataAndEquipment.sound}
+                                onChange={handleDataAndEquipmentChange}
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mb-4">
                     <button
                         type="button"
                         onClick={addMotorDetail}
-                        className="bg-green-500 text-white px-4 py-2 rounded"
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
                     >
                         Add Motor Detail
                     </button>
                 </div>
+
+                {formData.motorDetails.map((detail, index) => (
+                    <div key={index} className="mb-4 border p-4 rounded">
+                        <h3 className="text-lg font-semibold mb-2">
+                            Motor Detail {index + 1}
+                        </h3>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Original Price
+                            </label>
+                            <input
+                                type="number"
+                                name="originalPrice"
+                                value={detail.originalPrice}
+                                onChange={(e) =>
+                                    handleMotorDetailChange(index, e)
+                                }
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Sale Price
+                            </label>
+                            <input
+                                type="number"
+                                name="salePrice"
+                                value={detail.salePrice}
+                                onChange={(e) =>
+                                    handleMotorDetailChange(index, e)
+                                }
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Color
+                            </label>
+                            <select
+                                name="colorId"
+                                value={detail.colorId}
+                                onChange={(e) =>
+                                    handleMotorDetailChange(index, e)
+                                }
+                                className="border border-gray-300 rounded w-full p-2"
+                            >
+                                <option value="">Select Color</option>
+                                {colors?.metadata?.map((color) => (
+                                    <option key={color.id} value={color.id}>
+                                        {color.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mb-2">
+                            <label className="block text-sm font-medium mb-1">
+                                Quantity
+                            </label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={detail.quantity}
+                                onChange={(e) =>
+                                    handleMotorDetailChange(index, e)
+                                }
+                                className="border border-gray-300 rounded w-full p-2"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => removeMotorDetail(index)}
+                            className="bg-red-500 text-white px-4 py-2 rounded"
+                        >
+                            Remove
+                        </button>
+                    </div>
+                ))}
+
                 <div className="flex justify-end space-x-4 mt-4">
                     <button onClick={onClose} className="btn btn-secondary">
                         Cancel
                     </button>
-                    <button onClick={handleSubmit} className="btn btn-primary">
+                    <button
+                        onClick={handleSubmit}
+                        className="bg-green-500 text-white px-4 py-2 rounded"
+                    >
                         Submit
                     </button>
                 </div>

@@ -79,6 +79,7 @@ export default function OrderTable({ orders, refetch }) {
                 status: od.orderStatus,
                 statusId: od.orderStatusId,
                 orderLines: od.orderLines,
+                total: od.total
             }));
             setRows(order);
         }
@@ -315,6 +316,9 @@ export default function OrderTable({ orders, refetch }) {
                             </p>
                             <p>
                                 <strong>Customer:</strong> {selectedOrder.name}
+                            </p>
+                            <p>
+                                <strong>Total:</strong> ${selectedOrder.total}
                             </p>
                             <p>
                                 <strong>Created At:</strong>{' '}

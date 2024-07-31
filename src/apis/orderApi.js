@@ -16,20 +16,29 @@ export const orderApi = createApi({
             }),
         }),
         updateOrderStatus: builder.mutation({
-          query: (payload) => ({
-              url: `/order/updateorderstatus/${payload.orderId}`,
-              method: 'put',
-              data: {
-                orderStatusId: payload.orderStatusId
-              },
-              headers: {
-                  authorization: process.env.REACT_APP_AT_KEY,
-              },
-          }),
-      }),
+            query: (payload) => ({
+                url: `/order/updateorderstatus/${payload.orderId}`,
+                method: 'put',
+                data: {
+                    orderStatusId: payload.orderStatusId,
+                },
+                headers: {
+                    authorization: process.env.REACT_APP_AT_KEY,
+                },
+            }),
+        }),
+        getSalebyStatusId: builder.query({
+            query: (payload) => ({
+                url: `/order/ordertotalsalebystatus?startdate=${payload.startDate}&enddate=${payload.endDate}`,
+                method: 'get',
+                headers: {
+                    authorization: process.env.REACT_APP_AT_KEY,
+                },
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllOrderQuery, useUpdateOrderStatusMutation } = orderApi;
+export const { useGetAllOrderQuery, useUpdateOrderStatusMutation, useGetSalebyStatusIdQuery } = orderApi;
